@@ -24,7 +24,8 @@ The example string will give:
     6.0     103     99
 '''
 
-def convert_string(string:str):
+
+def method_1(string:str):
 
 
 
