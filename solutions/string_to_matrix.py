@@ -29,14 +29,13 @@ def method_1(string:str):
 
     # Split the string into individual periods
     # Gives: ["5.5,100,5.0,102,6.0,103:L10", ...]
-    periods = string.split(';')
-    periods.pop()
+    periods = string.split(';')[:-1]
 
     num_rows = 0
     num_cols = len(periods) + 1
 
     period_nums = []
-    prices = dict()
+    prices = {}
     for index, period in enumerate(periods):        # Iterate thru the periods
         
         elements = period.split(':L')               # Split rates/prices from periods
@@ -46,7 +45,7 @@ def method_1(string:str):
         # This is the first period
         if index == 0:
 
-            num_rows = int(len(price_rate) / 2) + 1 # Get the number of rows (rate, price, rate, ...)
+            num_rows = len(price_rate) // 2 + 1     # Get the number of rows (rate, price, rate, ...)
             for k in range(0, len(price_rate), 2):  # Iterate thru first prices to init dictionary
 
                 prices[price_rate[k]] = [price_rate[k+1]]
@@ -63,51 +62,65 @@ def method_1(string:str):
     for i, p in enumerate(period_nums):             # Add the period labels to the top of the matrix
         matrix[0][i+1] = p
 
-    index = 1
-    for key, value in prices.items():               # Iterate thru the price dictionary
+    # Iterate thru the price dictionary for rates and prices
+    for index, (key, value) in enumerate(prices.items(), start=1):
         matrix[index][0] = key                      # Add the rate to the first column
-
-        for i, p in enumerate(value):               # Add the prices of the rate to the row
-            matrix[index][i+1] = p
-
-        index += 1
+        matrix[index, 1:] = value                   # Add the rates prices to the matrix
 
     return matrix                                   # Return string matrix
 
 # ==============================================================================================
 def method_2(string: str):
+
+    # Split price periods
+    # Gives: ["5.50,1000,5.00,1020,6.00,1030:L100", "5.50,1010,5.00,1050,6.00,990:L200"]
     periods = string.split(';')[:-1]
-    num_cols = len(periods) + 1
 
-    period_nums = [period.split(':L')[-1] for period in periods]
+    # Split rates and prices from period numbers
+    # Gives: [("5.50,1000,5.00,1020,6.00,1030", "100"), ("5.50,1010,5.00,1050,6.00,990", "200")]
+    rates_periods = [tuple(period.split(':L')) for period in periods]
+    
+    # Slit the rates and prices
+    # Gives: [(["5.50", "1000", "5.00", "1020", "6.00", "1030"], "100"), ...]
+    data = [(rate.split(','), period) for rate, period in rates_periods]
 
-    prices = {}
-    num_rows = 0
+    # Separate data into rates, prices, and periods
+    # Gives: ['5.50', '5.00', '6.00']
+    rates = {}
+    periods = []
+    for r,p in data:
 
-    for index, period in enumerate(periods):
-        price_rate = period.split(':L')[0].split(',')
-        
-        if index == 0:
-            num_rows = len(price_rate) // 2 + 1
-            prices = {price_rate[k]: [price_rate[k + 1]] for k in range(0, len(price_rate), 2)}
-        else:
-            for k in range(0, len(price_rate), 2):
-                prices.setdefault(price_rate[k], []).append(price_rate[k + 1])
+        # Iterate thru the prices and rates
+        for i in range(0, len(r), 2):
 
+            # add the price to the rate
+            if r[i] in rates:
+                rates[r[i]].append(r[i+1])
+            # Init rate with first price
+            else:
+                rates[r[i]] = [r[i+1]]            
+
+        # Add to list of periods
+        periods.append(p)
+    
+    num_rows = len(rates) + 1
+    num_cols = len(rates_periods) + 1
+
+    # Initializing matrix
     matrix = np.full((num_rows, num_cols), '', dtype='<U10')
+    # Adding periods to matrix
+    matrix[0, 1:] = periods
 
-    for i, p in enumerate(period_nums):
-        matrix[0][i + 1] = p
-
-    for index, (key, value) in enumerate(prices.items(), start=1):
-        matrix[index][0] = key
-        matrix[index, 1:] = value  # Assign the entire row at once
-
+    # Adding prices and rates to matrix
+    for i, (rate,price)  in enumerate(rates.items(), start=1): 
+        matrix[i][0] = rate
+        matrix[i, 1:] = price      
+    
     return matrix
 
 # ==============================================================================================
 if __name__ == "__main__":
     string = "5.50,1000,5.00,1020,6.00,1030:L100;5.50,1010,5.00,1050,6.00,990:L200;"
 
-    print(method_1(string))
+    #print(method_1(string))
     print(method_2(string))
