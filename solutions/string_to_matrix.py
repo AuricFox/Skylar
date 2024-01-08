@@ -119,8 +119,68 @@ def method_2(string: str):
     return matrix
 
 # ==============================================================================================
+def method_3(string:str):
+    # Current string being tracted
+    rate = ''
+    price = ''
+    periods = []
+    rates = {}
+
+    delim = [',', ':', ';', 'L']
+
+    track = False
+
+    for c in string:        
+
+        # A price has been completed
+        if (c == ',' or c ==':') and track:
+
+            # Add the price to the rate
+            if rate in rates:
+                rates[rate].append(price)
+            # Init rate in dictionary
+            else:
+                rates[rate] = [price]
+
+            # Reset the rate and price variables
+            rate, price = '', ''
+            track = False
+
+        # A rate has been completed
+        elif c == ',' and not track:
+            track = True
+
+        # A period has been completed
+        elif c == ';' and not track:
+            periods.append(rate)
+            rate = ''
+
+        # Process rate
+        elif not track and c not in delim:
+            rate += c
+        # Process price
+        elif track and c not in delim:
+            price += c
+
+    n_row = len(rates) + 1
+    n_col = len(periods) + 1
+
+    # Init matrix with empty strings
+    matrix = np.full((n_row,n_col), '', dtype='<U10')
+    # Add periods to first row
+    matrix[0, 1:] = periods
+
+    # Add rates and prices to matrix
+    for i,(key,value) in enumerate(rates.items(), start=1):
+        matrix[i][0] = key
+        matrix[i, 1:] = value
+
+    return matrix
+
+# ==============================================================================================
 if __name__ == "__main__":
     string = "5.50,1000,5.00,1020,6.00,1030:L100;5.50,1010,5.00,1050,6.00,990:L200;"
 
     #print(method_1(string))
     print(method_2(string))
+    print(method_3(string))
