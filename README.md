@@ -43,13 +43,15 @@ Below is the schema of the SQLite3 database used for Skylar:
 
 ### Customer
 
-|**cid**|cname|address|city|state|
+|**cid**|cname |address|city |state|
+|:-----:|:----:|:-----:|:---:|:---:|
 
 - **PK**: cid
 
 ### ContactInfo
 
-|**cid**|type|value|
+|**cid**|type  |value  |
+|:-----:|:----:|:-----:|
 
 - **PK**: cid, type, value
 - **FK**: ContactInfo.cid TO Customer.cid
@@ -57,14 +59,16 @@ Below is the schema of the SQLite3 database used for Skylar:
 
 ### Restaurant
 
-|**rid**|rname|city|state|rating|ownerID|
+|**rid**|rname |city   |state|rating|ownerID|
+|:-----:|:----:|:-----:|:---:|:----:|:-----:|
 
 - **PK**: rid
 - **FK**: Restaurant.ownerID TO Owner.oid
 
 ### Reservation
 
-|**cid**|rid|date|num_adults|num_child|
+|**cid**|rid   |date   |num_adults|num_child|
+|:-----:|:----:|:-----:|:--------:|:-------:|
 
 - **PK**: cid, rid
 - **FK**: Reservation.cid TO Customer.cid
@@ -72,7 +76,8 @@ Below is the schema of the SQLite3 database used for Skylar:
 
 ### Owner
 
-|**Oid**|oname|
+|**Oid**|oname |
+|:-----:|:----:|
 
 - **PK**: Oid
 
