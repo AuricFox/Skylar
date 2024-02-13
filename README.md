@@ -1,2 +1,2 @@
-# coding_practice
-Programming practice for coding assessments and interviews.
+# Skylar
+Programming practice for coding assessments and interviews. Focuses on SQL queries and databases.
