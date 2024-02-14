@@ -115,6 +115,32 @@ def clear_tables():
     
     except sqlite3.Error as e:
         LOGGER.error(f"An error occurred when deleting all records from the tables: {e}")
-        return False
-    
+        return False   
+
 # ==============================================================================================================
+if __name__ == "__main__":
+    '''
+    Handles command line entries to manually set the database tables
+
+    Parameter(s): 
+        Two system arguments that include a input flag: 
+        python ./init_db.py [flag]
+
+    flag(s):
+        Create tables, "-c", initializes the Flashcard and Figure tables
+        Clear tables, "-d", deletes all the rows in both tables
+        Print tables, "-p", prints all the rows in both tables
+
+    Output(s): None
+    '''
+
+    # python .\phylogeny.py input_file
+    if(len(sys.argv) != 2):
+        print(f"Only two inputs allowed, {len(sys.argv)} were entered!")
+
+    # Create Tables
+    if(sys.argv[1] == "-c"): create_tables()
+    # Delete Tables
+    elif(sys.argv[1] == "-d"): clear_tables()
+    else:
+        print("Invalid Arguments!\nCreate Tables: -c\nDelete Tables: -d\n")
