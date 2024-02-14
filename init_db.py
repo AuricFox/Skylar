@@ -1,12 +1,11 @@
-import sqlite3, sys, os, utils
-from tabulate import tabulate
+import sqlite3, sys, utils
 
 LOGGER = utils.LOGGER
 
 # ==============================================================================================================
 def create_tables():
     '''
-    Creates the tables used by the flask server.
+    Initializes the empty tables.
 
     Parameter(s): None
 
@@ -77,7 +76,7 @@ def create_tables():
 # ==============================================================================================================
 def clear_tables():
     '''
-    Clears the data from the tables used by the flask server.
+    Clears all the data from the tables.
 
     Parameter(s): None
 
