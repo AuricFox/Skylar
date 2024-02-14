@@ -75,3 +75,46 @@ def create_tables():
         LOGGER.error(f"An error occured when creating tables: {e}")
 
 # ==============================================================================================================
+def clear_tables():
+    '''
+    Clears the data from the tables used by the flask server.
+
+    Parameter(s): None
+
+    Output(s): 
+        Bool: returns true if the tables are wiped, else returns false
+    '''
+
+    try:
+        with sqlite3.connect('flashcards.db') as conn:
+            c = conn.cursor()
+
+            # Customer Elements
+            LOGGER.info("Deleting Data From Customer Table...")
+            c.execute("DELETE FROM Customer")
+        
+            # Customer contact information
+            LOGGER.info("Deleting Data From ContactInfo Table...")
+            c.execute("DELETE FROM ContactInfo")
+
+            # Owner information
+            LOGGER.info("Deleting Data From Owner Table...")
+            c.execute("DELETE FROM Owner")
+
+            # Restaurant information
+            LOGGER.info("Deleting Data From Restaurant Table...")
+            c.execute("DELETE FROM Restaurant")
+
+            # Reservation information
+            LOGGER.info("Deleting Data From Reservation Table...")
+            c.execute("DELETE FROM Reservation")
+
+            conn.commit()
+
+        return True
+    
+    except sqlite3.Error as e:
+        LOGGER.error(f"An error occurred when deleting all records from the tables: {e}")
+        return False
+    
+# ==============================================================================================================
