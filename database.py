@@ -117,6 +117,39 @@ def clear_tables():
         return False   
 
 # ==============================================================================================================
+def db_query(query:str):
+    '''
+    Executes a user defined CRUD operation in the database
+
+    Parameter(s):
+        query (str): user defined 
+
+    Output(s):
+        repsonse (list, default=[]): a list of tuples containing the relanvent data to the query, else an 
+        empty list if the query fails or the query isn't a SELECT type (create, update, or delete)
+    '''
+    response = []
+
+    try:
+        with sqlite3.connect('Skylar.db') as conn:
+            c = conn.cursor()
+
+            LOGGER.info(f"Executing Query:\n{query}")
+            c.execute(query)
+
+            # Get selected data if there is any
+            if query.strip().upper().startswith('SELECT'):
+                response = c.fetchall()
+
+            conn.commit()
+
+        return response
+    
+    except sqlite3.Error as e:
+        LOGGER.error(f"An error occurred when executing the query {query}: {e}")
+        return response
+
+# ==============================================================================================================
 if __name__ == "__main__":
     '''
     Handles command line entries to manually set the database tables
