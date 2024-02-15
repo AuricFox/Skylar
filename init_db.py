@@ -14,7 +14,7 @@ def create_tables():
     '''
     
     try:
-        with sqlite3.connect('flashcards.db') as conn:      
+        with sqlite3.connect('Skylar.db') as conn:      
 
             c = conn.cursor()
             # Force forgein key support
@@ -85,7 +85,7 @@ def clear_tables():
     '''
 
     try:
-        with sqlite3.connect('flashcards.db') as conn:
+        with sqlite3.connect('Skylar.db') as conn:
             c = conn.cursor()
 
             # Customer Elements
