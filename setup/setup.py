@@ -117,7 +117,7 @@ def gen_email():
     Parameter(s): None
     
     Output(s):
-        A tuple containing the string email and the randomly generated email
+        An email string email that was randomly generated
     '''
     domains = ['gmail.com', 'yahoo.com', 'aol.com', 'outlook.com', 'hotmail.com', 'icloud.com']
     username = ''.join(random.choices('abcdefghijklmnopqrstuvwxyz0123456789', k=random.randint(5, 10)))
@@ -129,18 +129,18 @@ def gen_email():
 # ==============================================================================================================
 def gen_contacts():
     '''
-    Generates a list of contacts for an individual customer
+    Generates the contacts for an individual customer
 
     Parameter(s): None
 
     Output(s):
-        A list of email or phone numbers used as contacts
+        A dictionary of email or phone numbers used as contacts
     '''
     contact_types = ['email', 'phone']
     # The customer can have between 0 and 4 contacts
     num_contacts = random.randint(0,4)
 
-    contacts = {'email': [], 'phone': {'home': [], 'cell': []}}
+    contacts = {'email': [], 'home': [], 'cell': []}
 
     # Iterate thru the number of contacts
     for i in range(num_contacts):
@@ -153,19 +153,19 @@ def gen_contacts():
         # Append to the phone number list
         else:
             p_type, num = gen_number()
-            contacts['phone'][p_type].append(num)
+            contacts[p_type].append(num)
 
     return contacts
 
 # ==============================================================================================================
 def gen_customers():
     '''
-    Generates a list of customers and their info
+    Generates the customers and their info
 
     Parameter(s): None
 
     Output(s):
-        a list of customer information
+        a dictionary list of customer information
     '''
     customers = []
 
@@ -189,3 +189,42 @@ def gen_customers():
     return customers
 
 # ==============================================================================================================
+def gen_owners():
+    '''
+    Generates a list of owners and the restaurants they own
+    
+    Parameter(s): None
+    
+    Output(s):
+        A dictionary list of restaurant owner infomation
+    '''
+    owners = []
+
+    for i in range(25):
+        full_name = ' '.join(random.choice(NAMES))
+        restaurants = []
+
+        # Build a list of the owner's restaurants
+        for i in range(random.randint(0,5)):
+            restaurant = random.choice(RESTAURANTS)
+            city, state = random.choice(CITY_STATE)
+            rating = random.randint(0,5)
+
+            restaurants.append({
+                'rname': restaurant,
+                'city': city,
+                'state': state,
+                'rating': rating
+            })
+
+        owners.append({
+            'name': full_name,
+            'restaurants': restaurants
+        })
+    
+    return owners
+
+# ==============================================================================================================
+        
+if __name__ == '__main__':
+    print(gen_owners())
