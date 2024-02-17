@@ -125,3 +125,28 @@ def generate_email():
     email = f"{username}@{domain}"
 
     return ('email', email)
+
+# ==============================================================================================================
+def generate_customers():
+    '''
+    Generates a list of customers and their info
+
+    Parameter(s): None
+
+    Output(s):
+        a list of customer information
+    '''
+    customers = []
+
+    # Iterate through all customer names
+    for name in NAMES:
+
+        full_name = f"{name[0]} {name[1]}"
+        address = random.choice(STREET_ADDRESSES)
+        city, state = random.choice(CITY_STATE)
+
+        customers.append([full_name, address, city, state])
+
+    return customers
+
+# ==============================================================================================================
