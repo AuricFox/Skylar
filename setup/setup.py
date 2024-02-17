@@ -93,7 +93,7 @@ RESTAURANTS = [
 ]
 
 # ==============================================================================================================
-def generate_number():
+def gen_number():
     '''
     Generates a random phone number
 
@@ -110,7 +110,7 @@ def generate_number():
     return (phone_type, number)
 
 # ==============================================================================================================
-def generate_email():
+def gen_email():
     '''
     Generates a random email
     
@@ -124,10 +124,41 @@ def generate_email():
     domain = random.choice(domains)
     email = f"{username}@{domain}"
 
-    return ('email', email)
+    return email
 
 # ==============================================================================================================
-def generate_customers():
+def gen_contacts():
+    '''
+    Generates a list of contacts for an individual customer
+
+    Parameter(s): None
+
+    Output(s):
+        A list of email or phone numbers used as contacts
+    '''
+    contact_types = ['email', 'phone']
+    # The customer can have between 0 and 4 contacts
+    num_contacts = random.randint(0,4)
+
+    contacts = {'email': [], 'phone': {'home': [], 'cell': []}}
+
+    # Iterate thru the number of contacts
+    for i in range(num_contacts):
+        contact_type = random.choice(contact_types)
+
+        # Append to the email list
+        if contact_type == 'email':
+            contacts['email'].append(gen_email())
+        
+        # Append to the phone number list
+        else:
+            p_type, num = gen_number()
+            contacts['phone'][p_type].append(num)
+
+    return contacts
+
+# ==============================================================================================================
+def gen_customers():
     '''
     Generates a list of customers and their info
 
@@ -145,7 +176,15 @@ def generate_customers():
         address = random.choice(STREET_ADDRESSES)
         city, state = random.choice(CITY_STATE)
 
-        customers.append([full_name, address, city, state])
+        contact_info = gen_contacts()
+
+        customers.append({
+            'name': full_name, 
+            'address': address, 
+            'city': city, 
+            'state': state,
+            'contact_info': contact_info
+        })
 
     return customers
 
