@@ -1,4 +1,4 @@
-import sqlite3, sys, utils
+import sqlite3, sys, utils as utils
 
 LOGGER = utils.LOGGER
 
@@ -27,15 +27,17 @@ def create_tables():
                     cname TEXT,
                     address TEXT,
                     city TEXT,
-                    state TEXT
+                    state TEXT,
             )""")
         
             # Customer contact information
             LOGGER.info("Creating ContactInfo Table...")
             c.execute("""CREATE TABLE ContactInfo(
-                    cid INTEGER REFERENCES Customer(cid),
+                    cid INTEGER,
                     type TEXT, 
-                    value TEXT
+                    value TEXT,
+                    PRIMARY KEY (cid, type, value),
+                    FOREIGN KEY (cid) REFERENCES Customer(cid)
             )""")
 
             # Owner information
@@ -53,17 +55,21 @@ def create_tables():
                     city TEXT,
                     state TEXT,
                     rating TEXT,
-                    ownerID INTEGER REFERENCES Customer(Oid)
+                    ownerID INTEGER,
+                    FOREIGN KEY (ownerID) REFERENCES Owner(Oid)
             )""")
 
             # Reservation information
             LOGGER.info("Creating Reservation Table...")
             c.execute("""CREATE TABLE Reservation(
-                    cid INTEGER REFERENCES Customer(cid),
-                    rid INTEGER REFERENCES Restaurant(rid),
+                    cid INTEGER,
+                    rid INTEGER,
                     date TEXT,
                     num_adults INTEGER,
-                    num_child INTEGER
+                    num_child INTEGER,
+                    PRIMARY KEY (cid, rid),
+                    FOREIGN KEY (cid) REFERENCES Customer(cid),
+                    FOREIGN KEY (rid) REFERENCES Restaurant(rid)
             )""")
 
             conn.commit()

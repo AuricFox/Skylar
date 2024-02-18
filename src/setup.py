@@ -1,7 +1,7 @@
 '''
 NOTE: This is a single use program used to generate a json file used for populating the database tables
 '''
-import random
+import random, sqlite3
 
 NAMES = [
     ('John', 'Doe'), ('Jane', 'Smith'), ('Michael', 'Johnson'), ('Emily', 'Brown'), ('William', 'Jones'), ('Emma', 'Davis'), 
@@ -179,7 +179,7 @@ def gen_customers():
         contact_info = gen_contacts()
 
         customers.append({
-            'name': full_name, 
+            'cname': full_name, 
             'address': address, 
             'city': city, 
             'state': state,
@@ -224,7 +224,6 @@ def gen_owners():
     
     return owners
 
-# ==============================================================================================================
-        
+# ============================================================================================================== 
 if __name__ == '__main__':
     print(gen_owners())
