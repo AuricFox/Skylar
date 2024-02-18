@@ -242,7 +242,7 @@ def insert_customer(cname:str, address:str, city:str, state:str):
         state (str): the state in which the customer lives
     
     Output(s)
-        A primary key (int) that represents the customer in the Customer table
+        A primary key (int) that represents the customer in the Customer table if added, else None
     '''
 
     try:
@@ -273,6 +273,7 @@ def insert_contact(key:int, type:str, value:str):
     Output(s):
         True if the contact is successfully added, else false
     '''
+
     try:
         with sqlite3.connect('Skylar.db') as conn:      
 
@@ -285,6 +286,33 @@ def insert_contact(key:int, type:str, value:str):
     except Exception as e:
         LOGGER.error(f"An error occured when inserting into ContactInfo table: {e}")
         return False
+    
+# ==============================================================================================================
+def insert_owner(oname:str):
+    '''
+    Inserts the owner data into the database
+    
+    Parameter(s):
+        oname (str): name of the owner
+    
+    Output(s):
+        A primary key (int) that represents the owner in the Owner table if added, else None
+    '''
+
+    try:
+        with sqlite3.connect('Skylar.db') as conn:      
+
+            c = conn.cursor()
+            c.execute("INSERT INTO Owner (oname) VALUES (?)", (oname))
+            conn.commit()
+
+            key = c.lastrowid
+        
+            return key
+        
+    except Exception as e:
+        LOGGER.error(f"An error occured when inserting into Owner table: {e}")
+        return None
     
 # ==============================================================================================================
 if __name__ == '__main__':
