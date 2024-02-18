@@ -261,5 +261,31 @@ def insert_customer(cname:str, address:str, city:str, state:str):
         return None
 
 # ==============================================================================================================
+def insert_contact(key:int, type:str, value:str):
+    '''
+    Inserts the contact information of a customer
+    
+    Parameter(s):
+        key (int): the primary key referencing the customer
+        type (str): the contact type such as an email or phone number
+        value (str): an email address or phone number
+    
+    Output(s):
+        True if the contact is successfully added, else false
+    '''
+    try:
+        with sqlite3.connect('Skylar.db') as conn:      
+
+            c = conn.cursor()
+            c.execute("INSERT INTO ContactInfo (cid, type, value) VALUES (?,?,?)", (key, type, value))
+            conn.commit()
+        
+        return True
+        
+    except Exception as e:
+        LOGGER.error(f"An error occured when inserting into ContactInfo table: {e}")
+        return False
+    
+# ==============================================================================================================
 if __name__ == '__main__':
     print(gen_owners())
