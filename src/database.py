@@ -1,4 +1,4 @@
-import sqlite3, sys, utils as utils
+import sqlite3, sys, utils
 
 LOGGER = utils.LOGGER
 
