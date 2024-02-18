@@ -1,7 +1,9 @@
 '''
 NOTE: This is a single use program used to generate a json file used for populating the database tables
 '''
-import random, sqlite3
+import random, sqlite3, utils
+
+LOGGER = utils.LOGGER
 
 NAMES = [
     ('John', 'Doe'), ('Jane', 'Smith'), ('Michael', 'Johnson'), ('Emily', 'Brown'), ('William', 'Jones'), ('Emma', 'Davis'), 
@@ -92,6 +94,8 @@ RESTAURANTS = [
     "Taste of Ethiopia", "The Lemon Tree", "Flourish", "The Laughing Cow", "Cafe Mirage"
 ]
 
+# ==============================================================================================================
+# FUNCTIONS FOR GENERATING DATA FOR THE TABLES
 # ==============================================================================================================
 def gen_number():
     '''
@@ -224,6 +228,38 @@ def gen_owners():
     
     return owners
 
-# ============================================================================================================== 
+# ==============================================================================================================
+# FUNCTIONS FOR INSERTING THE DATA INTO THE DATABASE
+# ==============================================================================================================
+def insert_customer(cname:str, address:str, city:str, state:str):
+    '''
+    Inserts the customer data in the database
+    
+    Parameter(s):
+        cname (str): customer name
+        address (str): the street address of the customer's home
+        city (str): the city in which the customer resides
+        state (str): the state in which the customer lives
+    
+    Output(s)
+        A primary key (int) that represents the customer in the Customer table
+    '''
+
+    try:
+        with sqlite3.connect('Skylar.db') as conn:      
+
+            c = conn.cursor()
+            c.execute("INSERT INTO Customer (cname, address, city, state) VALUES (?,?,?,?)", (cname, address, city, state))
+            conn.commit()
+
+            key = c.lastrowid
+        
+            return key
+        
+    except Exception as e:
+        LOGGER.error(f"An error occured when inserting into Customer table: {e}")
+        return None
+
+# ==============================================================================================================
 if __name__ == '__main__':
     print(gen_owners())
