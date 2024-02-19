@@ -229,6 +229,55 @@ def gen_owners():
     return owners
 
 # ==============================================================================================================
+def gen_reservations():
+    '''
+    Generates a list of reservation data
+
+    NOTE: Must be run after the customer and restaurant data has been added to the tables,
+    Otherwise no reservations will be created.
+
+    Parameter(s): None
+
+    Output(s):
+        A dictionary list of reservation information
+    '''
+    reservations = []
+
+    try:
+        with sqlite3.connect('Skylar.db') as conn:      
+
+            c = conn.cursor()
+
+            # Get all customer id's
+            c.execute("SELECT cid FROM Customer")
+            customers = c.fetchall()
+
+            # Get all restaurant id's
+            c.execute("SELECT rid FROM Restaurant")
+            restaurants = c.fetchall()
+            
+            # No reservations can be placed
+            if customers == [] or restaurants == []: 
+                return restaurants
+
+            # Create 30 reservations
+            for i in range(30):
+
+                reservations.append({
+                    'cid': random.choice(customers)[0],
+                    'rid': random.choice(restaurants)[0],
+                    'date': 'date',
+                    'num_adults': random.randint(1,20),
+                    'num_child': random.randint(0,20)
+                })
+        
+            return reservations
+        
+    except Exception as e:
+        LOGGER.error(f"An error occured when generating reservations: {e}")
+        return None
+
+# ==============================================================================================================
 # FUNCTIONS FOR INSERTING THE DATA INTO THE DATABASE
 # ==============================================================================================================
 def insert_customer(cname:str, address:str, city:str, state:str):
