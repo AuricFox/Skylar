@@ -2,6 +2,7 @@
 NOTE: This is a single use program used to generate a json file used for populating the database tables
 '''
 import random, sqlite3, utils
+from datetime import datetime
 
 LOGGER = utils.LOGGER
 
@@ -229,6 +230,36 @@ def gen_owners():
     return owners
 
 # ==============================================================================================================
+def gen_date():
+    '''
+    Generates a random data (YYYY-MM-DD HH:MM)
+    
+    Parameter(s): None
+
+    Output(s):
+        A randomly generated date as a string
+    '''
+
+    year = random.randint(2000, 2030)
+    month = random.randint(1, 12)
+
+    # Month of February
+    if month == 2: 
+        day = random.randint(1, 28)
+    # Months with 30 days
+    elif month in [4, 6, 9, 11]:
+        day = random.randint(1, 30)
+    # Months with 31 days
+    else:
+        day = random.randint(1, 31)
+
+    hour = random.randint(0, 23)
+    minute = random.randint(0, 59)
+    
+    date_time = datetime(year, month, day, hour, minute)
+    return date_time.strftime('%Y-%m-%d %H:%M')
+
+# ==============================================================================================================
 def gen_reservations():
     '''
     Generates a list of reservation data
@@ -266,7 +297,7 @@ def gen_reservations():
                 reservations.append({
                     'cid': random.choice(customers)[0],
                     'rid': random.choice(restaurants)[0],
-                    'date': 'date',
+                    'date': gen_date(),
                     'num_adults': random.randint(1,20),
                     'num_child': random.randint(0,20)
                 })
@@ -423,4 +454,4 @@ def insert_reservation(cid:int, rid:int, data:str, num_adults:int, num_child:int
 
 # ==============================================================================================================
 if __name__ == '__main__':
-    print(gen_owners())
+    print(gen_date())
