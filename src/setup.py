@@ -313,7 +313,36 @@ def insert_owner(oname:str):
     except Exception as e:
         LOGGER.error(f"An error occured when inserting into Owner table: {e}")
         return None
+
+# ==============================================================================================================
+def insert_restaurant(rname:str, city:str, state:str, rating:int, ownerID:int):
+    '''
+    Inserts the reservation data into the database
     
+    Parameter(s):
+        rname (str): name of the restaurant
+        city (str): city in which the restaurant is located
+        state (str): state in which the restaurant is located
+        rating (int): the customer rating of the restaurant
+        ownerID (int): the primary key of the owner of the restaurant
+        
+    Output(s):
+        True if the restaurant is successfully added, else false
+    '''
+
+    try:
+        with sqlite3.connect('Skylar.db') as conn:
+
+            c = conn.cursor()
+            c.execute("INSERT INTO Restaurant (rname, city, state, rating, ownerID) VALUES (?,?,?,?,?)", (rname, city, state, rating, ownerID))
+            conn.commit()
+        
+        return True
+        
+    except Exception as e:
+        LOGGER.error(f"An error occured when inserting into Reservation table: {e}")
+        return False
+
 # ==============================================================================================================
 def insert_reservation(cid:int, rid:int, data:str, num_adults:int, num_child:int):
     '''
