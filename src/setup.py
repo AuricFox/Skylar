@@ -315,5 +315,34 @@ def insert_owner(oname:str):
         return None
     
 # ==============================================================================================================
+def insert_reservation(cid:int, rid:int, data:str, num_adults:int, num_child:int):
+    '''
+    Inserts the reservation data into the database
+    
+    Parameter(s):
+        cid (int): customer primary key
+        rid (int): restaurant primary key
+        data (str): day and time the reservantion is placed
+        num_adults (int): the number of adults attending
+        num_child (int): the number of children attending
+        
+    Output(s):
+        True if the reservation is successfully added, else false
+    '''
+
+    try:
+        with sqlite3.connect('Skylar.db') as conn:      
+
+            c = conn.cursor()
+            c.execute("INSERT INTO Reservation (cid, rid, date, num_adults, num_child) VALUES (?,?,?,?,?)", (cid, rid, data, num_adults, num_child))
+            conn.commit()
+        
+        return True
+        
+    except Exception as e:
+        LOGGER.error(f"An error occured when inserting into Reservation table: {e}")
+        return False
+
+# ==============================================================================================================
 if __name__ == '__main__':
     print(gen_owners())
