@@ -345,6 +345,84 @@ def insert_reservation(cid:int, rid:int, date:str, num_adults:int, num_child:int
         return False
 
 # ==============================================================================================================
+def verify_query(table_name:str, query_id:tuple):
+    '''
+    Verifies the user defined inputs to mitigate sql injection
+
+    Parameter(s):
+        table_name (str): table where data is being added
+        query_id (tuple): column names where the data is being inserted
+        
+    Output(s):
+        True if the data is valid, else false
+    '''
+    allowed_tables = ['Customer', 'ContactInfo', 'Restaurant', 'Reservation', 'Owner']
+
+    # Whitelist of allowed column names for each table
+    allowed_columns = {
+        'Customer': ['cid', 'cname', 'address', 'city', 'state'],
+        'ContactInfo': ['cid', 'type', 'value'],
+        'Restaurant': ['rid', 'rname', 'city', 'state', 'rating', 'ownerID'],
+        'Reservation': ['cid', 'rid', 'date', 'num_adults', 'num_child'],
+        'Owner': ['Oid', 'oname']        
+    }
+
+    # Current table is not valid
+    if table_name not in allowed_tables:
+        LOGGER.error(f"{table_name} is not a valid table!")
+        return False
+
+    # Check for invalid column names
+    invalid_columns = [col for col in query_id if col not in allowed_columns.get(table_name, [])]
+
+    # Current column names are invalid
+    if invalid_columns:
+        LOGGER.error((f"Invalid column name(s): {', '.join(invalid_columns)}"))
+        return False
+    
+    return True
+
+# ==============================================================================================================
+def insert_query(table_name:str, query_id:tuple, query_set:tuple):
+    '''
+    Inserts the relavent data into the database
+    
+    Parameter(s):
+        table_name (str): table where data is being added
+        query_id (tuple): column names where the data is being inserted
+        query_set (tuple): data being added to the table
+        
+    Output(s):
+        True if the data is successfully added, else false
+    '''
+
+    try:
+        # Check if the lengths match
+        if len(query_id) != len(query_set):
+            raise ValueError("Length of query_id and query_set tuples must match")
+        
+        # Check validity of the input data
+        if not verify_query(table_name=table_name, query_id=query_id):
+            raise ValueError("Invalid table or column name")
+        
+        # Build Input query string
+        placeholders = ', '.join(['?' for _ in query_id])
+        columns = ', '.join(query_id)
+        query = f"INSERT INTO {table_name} ({columns}) VALUES ({placeholders})"
+
+        with sqlite3.connect('Skylar.db') as conn:      
+
+            c = conn.cursor()
+            c.execute(query, query_set)
+            conn.commit()
+        
+        return True
+        
+    except Exception as e:
+        LOGGER.error(f"An error occured when inserting into data into {table_name}: {e}")
+        return False
+
+# ==============================================================================================================
 if __name__ == "__main__":
     '''
     Handles command line entries to manually set the database tables
