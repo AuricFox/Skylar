@@ -492,8 +492,10 @@ class Creation:
             True if the customers and contacts are successfully added to the database, else False
         '''
         try:
+            # Add all the customers to the database
             for customer in self.customers:
 
+                # Add the customer and get their primary key
                 key = insert_customer(
                     cname=customer['cname'],
                     address=customer['address'],
@@ -501,6 +503,7 @@ class Creation:
                     state=customer['state']
                 )
 
+                # Add all the customers contact info
                 for contact in customer['contacts']:
                     insert_contact(
                         key=key,
@@ -511,12 +514,45 @@ class Creation:
             return True
         
         except Exception as e:
-            LOGGER.error(f'An error occured when adding customers to the database: {e}')
+            LOGGER.error(f'An error occured when adding customers and contact info to the database: {e}')
             return False
     
     # ----------------------------------------------------------------------------------------------------------
     def add_owners(self):
-        pass
+        '''
+        Populates the Owner and Restaurant tables in the database
+
+        Parameter(s):
+            self.owners must be populated with data
+
+        Output(s):
+            True if the owners and restaurants are successfully added to the database, else False
+        '''
+
+        try:
+            # Add all the owners to the database
+            for owner in self.owners:
+
+                # Add the owner and get their primary key
+                key = insert_owner(
+                    oname=owner['oname']
+                )
+
+                # Insert all the restaurants the owner has
+                for restaurant in owner['restaurants']:
+                    insert_restaurant(
+                        rname=restaurant['rname'],
+                        city=restaurant['city'],
+                        state=restaurant['state'],
+                        rating=restaurant['rating'],
+                        ownerID=key
+                    )
+        
+            return True
+        
+        except Exception as e:
+            LOGGER.error(f'An error occured when adding owners and restaurants to the database: {e}')
+            return False
     
     # ----------------------------------------------------------------------------------------------------------
     def add_reservations(self):
