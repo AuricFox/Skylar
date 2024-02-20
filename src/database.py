@@ -1,4 +1,5 @@
 import sqlite3, sys, utils
+from tabulate import tabulate
 
 LOGGER = utils.LOGGER
 
@@ -120,7 +121,53 @@ def clear_tables():
     
     except sqlite3.Error as e:
         LOGGER.error(f"An error occurred when deleting all records from the tables: {e}")
-        return False   
+        return False
+
+# ==============================================================================================================
+def print_tables():
+    '''
+    Prints the contents of Skylar
+
+    Parameter(s): None
+
+    Output(s):
+        Prints tables to command terminal
+    '''
+
+    with sqlite3.connect('Skylar.db') as conn:
+            c = conn.cursor()
+
+            # Print Customer table data
+            print("Customer Table Data:")
+            c.execute("SELECT * FROM Customer")
+            customers = c.fetchall()
+            print(tabulate(customers, headers=["cid", "cname", "address", "city", "state"], tablefmt="grid"))
+
+            # Print ContactInfo table data
+            print("ContactInfo Table Data:")
+            c.execute("SELECT * FROM ContactInfo")
+            contacts = c.fetchall()
+            print(tabulate(contacts, headers=["cid", "type", "value"], tablefmt="grid"))
+
+            # Print Owner table data
+            print("Owner Table Data:")
+            c.execute("SELECT * FROM Owner")
+            owners = c.fetchall()
+            print(tabulate(owners, headers=["Oid", "oname"], tablefmt="grid"))
+
+            # Print Restaurant table data
+            print("Restaurant Table Data:")
+            c.execute("SELECT * FROM Restaurant")
+            restaurants = c.fetchall()
+            print(tabulate(restaurants, headers=["rid", "rname", "city", "state", "rating", "ownerID"], tablefmt="grid"))
+
+            # Print Reservation table data
+            print("Reservation Table Data:")
+            c.execute("SELECT * FROM Reservation")
+            reservations = c.fetchall()
+            print(tabulate(reservations, headers=["cid", "rid", "date", "num_adults", "num_child"], tablefmt="grid"))
+
+            conn.commit()
 
 # ==============================================================================================================
 def db_query(query:str):
@@ -180,5 +227,8 @@ if __name__ == "__main__":
     if(sys.argv[1] == "-c"): create_tables()
     # Delete Tables
     elif(sys.argv[1] == "-d"): clear_tables()
+    # Print Tables
+    elif(sys.argv[1] == "-p"): print_tables()
+
     else:
         print("Invalid Arguments!\nCreate Tables: -c\nDelete Tables: -d\n")
