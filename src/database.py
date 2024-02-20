@@ -28,7 +28,7 @@ def create_tables():
                     cname TEXT,
                     address TEXT,
                     city TEXT,
-                    state TEXT,
+                    state TEXT
             )""")
         
             # Customer contact information
