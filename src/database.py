@@ -203,6 +203,148 @@ def db_query(query:str):
         return response
 
 # ==============================================================================================================
+def insert_customer(cname:str, address:str, city:str, state:str):
+    '''
+    Inserts the customer data in the database
+    
+    Parameter(s):
+        cname (str): customer name
+        address (str): the street address of the customer's home
+        city (str): the city in which the customer resides
+        state (str): the state in which the customer lives
+    
+    Output(s)
+        A primary key (int) that represents the customer in the Customer table if added, else None
+    '''
+
+    try:
+        with sqlite3.connect('Skylar.db') as conn:      
+
+            c = conn.cursor()
+            c.execute("INSERT INTO Customer (cname, address, city, state) VALUES (?,?,?,?)", (cname, address, city, state))
+            conn.commit()
+
+            key = c.lastrowid
+        
+            return key
+        
+    except Exception as e:
+        LOGGER.error(f"An error occured when inserting into Customer table: {e}")
+        return None
+
+# ==============================================================================================================
+def insert_contact(key:int, type:str, value:str):
+    '''
+    Inserts the contact information of a customer
+    
+    Parameter(s):
+        key (int): the primary key referencing the customer
+        type (str): the contact type such as an email or phone number
+        value (str): an email address or phone number
+    
+    Output(s):
+        True if the contact is successfully added, else false
+    '''
+
+    try:
+        with sqlite3.connect('Skylar.db') as conn:      
+
+            c = conn.cursor()
+            c.execute("INSERT INTO ContactInfo (cid, type, value) VALUES (?,?,?)", (key, type, value))
+            conn.commit()
+        
+        return True
+        
+    except Exception as e:
+        LOGGER.error(f"An error occured when inserting into ContactInfo table: {e}")
+        return False
+    
+# ==============================================================================================================
+def insert_owner(oname:str):
+    '''
+    Inserts the owner data into the database
+    
+    Parameter(s):
+        oname (str): name of the owner
+    
+    Output(s):
+        A primary key (int) that represents the owner in the Owner table if added, else None
+    '''
+
+    try:
+        with sqlite3.connect('Skylar.db') as conn:      
+
+            c = conn.cursor()
+            c.execute("INSERT INTO Owner (oname) VALUES (?)", (oname))
+            conn.commit()
+
+            key = c.lastrowid
+        
+            return key
+        
+    except Exception as e:
+        LOGGER.error(f"An error occured when inserting into Owner table: {e}")
+        return None
+
+# ==============================================================================================================
+def insert_restaurant(rname:str, city:str, state:str, rating:int, ownerID:int):
+    '''
+    Inserts the reservation data into the database
+    
+    Parameter(s):
+        rname (str): name of the restaurant
+        city (str): city in which the restaurant is located
+        state (str): state in which the restaurant is located
+        rating (int): the customer rating of the restaurant
+        ownerID (int): the primary key of the owner of the restaurant
+        
+    Output(s):
+        True if the restaurant is successfully added, else false
+    '''
+
+    try:
+        with sqlite3.connect('Skylar.db') as conn:
+
+            c = conn.cursor()
+            c.execute("INSERT INTO Restaurant (rname, city, state, rating, ownerID) VALUES (?,?,?,?,?)", (rname, city, state, rating, ownerID))
+            conn.commit()
+        
+        return True
+        
+    except Exception as e:
+        LOGGER.error(f"An error occured when inserting into Reservation table: {e}")
+        return False
+
+# ==============================================================================================================
+def insert_reservation(cid:int, rid:int, date:str, num_adults:int, num_child:int):
+    '''
+    Inserts the reservation data into the database
+    
+    Parameter(s):
+        cid (int): customer primary key
+        rid (int): restaurant primary key
+        data (str): day and time the reservantion is placed
+        num_adults (int): the number of adults attending
+        num_child (int): the number of children attending
+        
+    Output(s):
+        True if the reservation is successfully added, else false
+    '''
+
+    try:
+        with sqlite3.connect('Skylar.db') as conn:      
+
+            c = conn.cursor()
+            c.execute("INSERT INTO Reservation (cid, rid, date, num_adults, num_child) VALUES (?,?,?,?,?)", (cid, rid, date, num_adults, num_child))
+            conn.commit()
+        
+        return True
+        
+    except Exception as e:
+        LOGGER.error(f"An error occured when inserting into Reservation table: {e}")
+        return False
+
+# ==============================================================================================================
 if __name__ == "__main__":
     '''
     Handles command line entries to manually set the database tables
