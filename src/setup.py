@@ -141,11 +141,11 @@ def gen_contacts():
     Output(s):
         A dictionary of email or phone numbers used as contacts
     '''
-    contact_types = ['email', 'phone']
+    contact_types = ['email', 'home', 'cell']
     # The customer can have between 0 and 4 contacts
     num_contacts = random.randint(0,4)
 
-    contacts = {'email': [], 'home': [], 'cell': []}
+    contacts = []
 
     # Iterate thru the number of contacts
     for i in range(num_contacts):
@@ -153,12 +153,19 @@ def gen_contacts():
 
         # Append to the email list
         if contact_type == 'email':
-            contacts['email'].append(gen_email())
+            contacts.append({
+                'type': 'email',
+                'value': gen_email()
+            })
         
         # Append to the phone number list
         else:
             p_type, num = gen_number()
-            contacts[p_type].append(num)
+
+            contacts.append({
+                'type': p_type,
+                'value': num
+            })
 
     return contacts
 
@@ -472,13 +479,46 @@ class Creation:
         self.add_customers()
         self.add_owners()
         self.add_reservations()
-
+    
+    # ----------------------------------------------------------------------------------------------------------
     def add_customers(self):
-        pass
+        '''
+        Populates the Customer and ContactInfo tables in the database
 
+        Parameter(s):
+            self.customers must be populated with data
+
+        Output(s):
+            True if the customers and contacts are successfully added to the database, else False
+        '''
+        try:
+            for customer in self.customers:
+
+                key = insert_customer(
+                    cname=customer['cname'],
+                    address=customer['address'],
+                    city=customer['city'],
+                    state=customer['state']
+                )
+
+                for contact in customer['contacts']:
+                    insert_contact(
+                        key=key,
+                        type=contact['type'],
+                        value=contact['value']
+                    )
+        
+            return True
+        
+        except Exception as e:
+            LOGGER.error(f'An error occured when adding customers to the database: {e}')
+            return False
+    
+    # ----------------------------------------------------------------------------------------------------------
     def add_owners(self):
         pass
-
+    
+    # ----------------------------------------------------------------------------------------------------------
     def add_reservations(self):
         pass
     
