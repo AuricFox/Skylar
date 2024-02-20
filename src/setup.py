@@ -1,7 +1,7 @@
 '''
 NOTE: This is a single use program used to generate a json file used for populating the database tables
 '''
-import random, sqlite3, utils
+import random, sqlite3, utils, database
 from datetime import datetime
 
 LOGGER = utils.LOGGER
@@ -431,7 +431,7 @@ def insert_restaurant(rname:str, city:str, state:str, rating:int, ownerID:int):
         return False
 
 # ==============================================================================================================
-def insert_reservation(cid:int, rid:int, data:str, num_adults:int, num_child:int):
+def insert_reservation(cid:int, rid:int, date:str, num_adults:int, num_child:int):
     '''
     Inserts the reservation data into the database
     
@@ -450,7 +450,7 @@ def insert_reservation(cid:int, rid:int, data:str, num_adults:int, num_child:int
         with sqlite3.connect('Skylar.db') as conn:      
 
             c = conn.cursor()
-            c.execute("INSERT INTO Reservation (cid, rid, date, num_adults, num_child) VALUES (?,?,?,?,?)", (cid, rid, data, num_adults, num_child))
+            c.execute("INSERT INTO Reservation (cid, rid, date, num_adults, num_child) VALUES (?,?,?,?,?)", (cid, rid, date, num_adults, num_child))
             conn.commit()
         
         return True
@@ -472,6 +472,8 @@ class Creation:
         
         Output(s): None
         '''
+        # Clear all database tables
+        database.clear_tables()
 
         self.customers = gen_customers()
         self.owners = gen_owners()
@@ -556,7 +558,31 @@ class Creation:
     
     # ----------------------------------------------------------------------------------------------------------
     def add_reservations(self):
-        pass
+        '''
+        Populates the Reservation table in the database
+
+        Parameter(s):
+            The Customer and Restaurant tables must be populated
+
+        Output(s):
+            True if the reservations are successfully added to the database, else False
+        '''
+        try:
+            reservations = gen_reservations()
+
+            for reservation in reservations:
+                insert_reservation(
+                    cid=reservation['cid'],
+                    rid=reservation['rid'],
+                    date=reservation['date'],
+                    num_adults=reservation['num_adults'],
+                    num_child=reservation['num_child']
+                )
+            return True
+        
+        except Exception as e:
+           LOGGER.error(f'An error occured when adding reservations to the database: {e}')
+           return False
     
 # ==============================================================================================================
 if __name__ == '__main__':
