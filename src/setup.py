@@ -453,5 +453,35 @@ def insert_reservation(cid:int, rid:int, data:str, num_adults:int, num_child:int
         return False
 
 # ==============================================================================================================
+# USED FOR POPULATING THE DATABASE
+# ==============================================================================================================
+class Creation:
+    def __int__(self):
+        '''
+        Initializes the Creation class by getting the randomly generated customer and owner data. The data is then added
+        to the database afterwhich the reservation data is created and then added to the database
+        
+        Parameter(s): None
+        
+        Output(s): None
+        '''
+
+        self.customers = gen_customers()
+        self.owners = gen_owners()
+
+        self.add_customers()
+        self.add_owners()
+        self.add_reservations()
+
+    def add_customers(self):
+        pass
+
+    def add_owners(self):
+        pass
+
+    def add_reservations(self):
+        pass
+    
+# ==============================================================================================================
 if __name__ == '__main__':
     print(gen_date())
