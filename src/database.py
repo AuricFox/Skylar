@@ -354,7 +354,7 @@ def verify_query(table_name:str, query_id:tuple):
         query_id (tuple): column names where the data is being inserted
         
     Output(s):
-        True if the data is valid, else false
+        None, raises an error if triggered
     '''
     allowed_tables = ['Customer', 'ContactInfo', 'Restaurant', 'Reservation', 'Owner']
 
@@ -370,7 +370,7 @@ def verify_query(table_name:str, query_id:tuple):
     # Current table is not valid
     if table_name not in allowed_tables:
         LOGGER.error(f"{table_name} is not a valid table!")
-        return False
+        raise ValueError("Invalid table name used!")
 
     # Check for invalid column names
     invalid_columns = [col for col in query_id if col not in allowed_columns.get(table_name, [])]
@@ -378,9 +378,7 @@ def verify_query(table_name:str, query_id:tuple):
     # Current column names are invalid
     if invalid_columns:
         LOGGER.error((f"Invalid column name(s): {', '.join(invalid_columns)}"))
-        return False
-    
-    return True
+        raise ValueError("Invalid column name used!")
 
 # ==============================================================================================================
 def insert_query(table_name:str, query_id:tuple, query_set:tuple):
@@ -402,8 +400,7 @@ def insert_query(table_name:str, query_id:tuple, query_set:tuple):
             raise ValueError("Length of query_id and query_set tuples must match")
         
         # Check validity of the input data
-        if not verify_query(table_name=table_name, query_id=query_id):
-            raise ValueError("Invalid table or column name")
+        verify_query(table_name=table_name, query_id=query_id)
         
         # Build Input query string
         placeholders = ', '.join(['?' for _ in query_id])
@@ -422,6 +419,52 @@ def insert_query(table_name:str, query_id:tuple, query_set:tuple):
         LOGGER.error(f"An error occured when inserting into data into {table_name}: {e}")
         return False
 
+# ==============================================================================================================
+def select_query(table_name:str, query_id:tuple):
+    '''
+    Retrieves the relavent data from the database
+    
+    Parameter(s):
+        table_name (str): table where data is being accessed
+        query_id (tuple): column names where the data is being pulled from
+        
+    Output(s):
+        response (list): a list of the queried data formatted into a dictionary
+            response = [{col1: value1, col2: value1, ...}, {col1: value2, col2: value2, ...}, ...]
+    '''
+    response = []
+
+    try:
+        # Check if the inputs are valid
+        if (len(query_id) == 1 and query_id[0] != '*') or len(query_id) != 1:
+            verify_query(table_name=table_name, query_id=query_id)
+        
+        # Build Input query string
+        columns = ', '.join(query_id)
+        query = f"SELECT {columns} FROM {table_name}"
+
+        with sqlite3.connect('Skylar.db') as conn:      
+            c = conn.cursor()
+
+            # Get the column names if selecting all fields
+            if len(query_id) == 1 and query_id[0] != '*':
+                c.execute(f"PRAGMA table_info({table_name})")
+                columns_info = c.fetchall()
+                query_id = (info[1] for info in columns_info)
+
+            # Get the queried data
+            c.execute(query)
+            data = c.fetchall()
+
+            # Convert the queried data from tuples to dictionaries
+            for d in data:
+                response.append({key: value for key, value in zip(query_id, d)})
+        
+    except Exception as e:
+        LOGGER.error(f"An error occured when selecting data from {table_name}: {e}")
+    
+    return response
+    
 # ==============================================================================================================
 if __name__ == "__main__":
     '''

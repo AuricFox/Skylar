@@ -96,7 +96,7 @@ RESTAURANTS = [
 ]
 
 # ==============================================================================================================
-# FUNCTIONS FOR GENERATING DATA FOR THE TABLES
+# GENERATING DATA FOR THE TABLES
 # ==============================================================================================================
 def gen_number():
     '''
@@ -148,7 +148,7 @@ def gen_contacts():
     contacts = []
 
     # Iterate thru the number of contacts
-    for i in range(num_contacts):
+    for _ in range(num_contacts):
         contact_type = random.choice(contact_types)
 
         # Append to the email list
@@ -212,12 +212,12 @@ def gen_owners():
     '''
     owners = []
 
-    for i in range(25):
+    for _ in range(25):
         full_name = ' '.join(random.choice(NAMES))
         restaurants = []
 
         # Build a list of the owner's restaurants
-        for i in range(random.randint(0,5)):
+        for _ in range(random.randint(0,5)):
             restaurant = random.choice(RESTAURANTS)
             city, state = random.choice(CITY_STATE)
             rating = random.randint(0,5)
@@ -299,7 +299,7 @@ def gen_reservations():
                 return restaurants
 
             # Create 30 reservations
-            for i in range(30):
+            for _ in range(30):
 
                 reservations.append({
                     'cid': random.choice(customers)[0],
@@ -309,14 +309,18 @@ def gen_reservations():
                     'num_child': random.randint(0,20)
                 })
         
-            return reservations
-        
     except Exception as e:
         LOGGER.error(f"An error occured when generating reservations: {e}")
-        return None
+    
+    return reservations
 
 # ==============================================================================================================
-# USED FOR POPULATING THE DATABASE
+# MIGRATING THE DATA FROM THE TABLES TO A JSON FILE
+# ==============================================================================================================
+def to_json():
+    pass
+# ==============================================================================================================
+# POPULATING THE DATABASE
 # ==============================================================================================================
 class Creation:
     def __int__(self):
