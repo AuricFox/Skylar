@@ -329,11 +329,11 @@ def to_json(file:str='data.json'):
     '''
     try:
         data = {
-            'cutomers': database.select_query(table_name='Customer'),
-            'contactInfo': database.select_query(table_name='ContactInfo'),
-            'owners': database.select_query(table_name='Owner'),
-            'restaurants': database.select_query(table_name='Restaurant'),
-            'reservations': database.select_query(table_name='Reservation')
+            'Cutomer': database.select_query(table_name='Customer'),
+            'ContactInfo': database.select_query(table_name='ContactInfo'),
+            'Owner': database.select_query(table_name='Owner'),
+            'Restaurant': database.select_query(table_name='Restaurant'),
+            'Reservation': database.select_query(table_name='Reservation')
         }
 
         # Write data to the JSON file
