@@ -420,13 +420,14 @@ def insert_query(table_name:str, query_id:tuple, query_set:tuple):
         return False
 
 # ==============================================================================================================
-def select_query(table_name:str, query_id:tuple):
+def select_query(table_name:str, query_id:tuple=None):
     '''
     Retrieves the relavent data from the database
     
     Parameter(s):
         table_name (str): table where data is being accessed
-        query_id (tuple): column names where the data is being pulled from
+        query_id (tuple, default=None): column names where the data is being selected from if provided, else
+            select all the table attributes
         
     Output(s):
         response (list): a list of the queried data formatted into a dictionary
@@ -436,18 +437,21 @@ def select_query(table_name:str, query_id:tuple):
 
     try:
         # Check if the inputs are valid
-        if (len(query_id) == 1 and query_id[0] != '*') or len(query_id) != 1:
+        if query_id:
             verify_query(table_name=table_name, query_id=query_id)
+            columns = ', '.join(query_id)
+        else:
+            verify_query(table_name=table_name)
+            columns = '*'
         
         # Build Input query string
-        columns = ', '.join(query_id)
         query = f"SELECT {columns} FROM {table_name}"
 
         with sqlite3.connect('Skylar.db') as conn:      
             c = conn.cursor()
 
-            # Get the column names if selecting all fields
-            if len(query_id) == 1 and query_id[0] != '*':
+            # Get the column names of all fields
+            if not query_id:
                 c.execute(f"PRAGMA table_info({table_name})")
                 columns_info = c.fetchall()
                 query_id = (info[1] for info in columns_info)
