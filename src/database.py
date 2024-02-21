@@ -371,8 +371,10 @@ def verify_query(table_name:str, query_id:tuple):
         LOGGER.error(f"{table_name} is not a valid table!")
         raise ValueError("Invalid table name used!")
 
-    # Check for invalid column names
-    invalid_columns = [col for col in query_id if col not in allowed_columns.get(table_name, [])]
+    invalid_columns = []
+    if query_id:
+        # Check for invalid column names
+        invalid_columns = [col for col in query_id if col not in allowed_columns.get(table_name, [])]
 
     # Current column names are invalid
     if invalid_columns:
@@ -440,7 +442,7 @@ def select_query(table_name:str, query_id:tuple=None):
             verify_query(table_name=table_name, query_id=query_id)
             columns = ', '.join(query_id)
         else:
-            verify_query(table_name=table_name)
+            verify_query(table_name=table_name, query_id=None)
             columns = '*'
         
         # Build Input query string
@@ -453,7 +455,7 @@ def select_query(table_name:str, query_id:tuple=None):
             if not query_id:
                 c.execute(f"PRAGMA table_info({table_name})")
                 columns_info = c.fetchall()
-                query_id = (info[1] for info in columns_info)
+                query_id = [info[1] for info in columns_info]
 
             # Get the queried data
             c.execute(query)
@@ -461,7 +463,8 @@ def select_query(table_name:str, query_id:tuple=None):
 
             # Convert the queried data from tuples to dictionaries
             for d in data:
-                response.append({key: value for key, value in zip(query_id, d)})
+                keys = query_id
+                response.append({key: value for key, value in zip(keys, d)})
         
     except Exception as e:
         LOGGER.error(f"An error occured when selecting data from {table_name}: {e}")
