@@ -1,7 +1,7 @@
 '''
 NOTE: This is a single use program used to generate a json file used for populating the database tables
 '''
-import random, sqlite3, utils, database
+import random, sqlite3, json, utils, database
 from datetime import datetime
 
 LOGGER = utils.LOGGER
@@ -317,8 +317,32 @@ def gen_reservations():
 # ==============================================================================================================
 # MIGRATING THE DATA FROM THE TABLES TO A JSON FILE
 # ==============================================================================================================
-def to_json():
-    pass
+def to_json(file:str='data.json'):
+    '''
+    Migrates the data in the database to a JSON file
+
+    Parameter(s):
+        file (str, default=data.json): file where the migrated data is saved
+
+    Output(s):
+        A jSON file containing the migrated data
+    '''
+    try:
+        data = {
+            'cutomers': database.select_query(table_name='Customer'),
+            'contactInfo': database.select_query(table_name='ContactInfo'),
+            'owners': database.select_query(table_name='Owner'),
+            'restaurants': database.select_query(table_name='Restaurant'),
+            'reservations': database.select_query(table_name='Reservation')
+        }
+
+        # Write data to the JSON file
+        with open(file, 'w') as f:
+            json.dump(data, f)
+
+    except Exception as e:
+        LOGGER.error(f"An error occured when migrating data to a json file: {e}")
+    
 # ==============================================================================================================
 # POPULATING THE DATABASE
 # ==============================================================================================================
