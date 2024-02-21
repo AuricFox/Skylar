@@ -353,7 +353,7 @@ def verify_query(table_name:str, query_id:tuple):
         query_id (tuple): column names where the data is being inserted
         
     Output(s):
-        None, raises an error if triggered
+        Returns True if the inputs are valid, esle False
     '''
     allowed_tables = ['Customer', 'ContactInfo', 'Restaurant', 'Reservation', 'Owner']
 
@@ -369,17 +369,19 @@ def verify_query(table_name:str, query_id:tuple):
     # Current table is not valid
     if table_name not in allowed_tables:
         LOGGER.error(f"{table_name} is not a valid table!")
-        raise ValueError("Invalid table name used!")
+        return False
 
     invalid_columns = []
+    # Check for invalid column names
     if query_id:
-        # Check for invalid column names
         invalid_columns = [col for col in query_id if col not in allowed_columns.get(table_name, [])]
 
     # Current column names are invalid
     if invalid_columns:
         LOGGER.error((f"Invalid column name(s): {', '.join(invalid_columns)}"))
-        raise ValueError("Invalid column name used!")
+        return False
+    
+    return True
 
 # ==============================================================================================================
 def insert_query(table_name:str, query_id:tuple, query_set:tuple):
@@ -398,10 +400,11 @@ def insert_query(table_name:str, query_id:tuple, query_set:tuple):
     try:
         # Check if the lengths match
         if len(query_id) != len(query_set):
-            raise ValueError("Length of query_id and query_set tuples must match")
+            raise ValueError("Length of query_id and query_set mismatch")
         
         # Check validity of the input data
-        verify_query(table_name=table_name, query_id=query_id)
+        if not verify_query(table_name=table_name, query_id=query_id):
+            raise ValueError("Invalid table or column name entered!")
         
         # Build Input query string
         placeholders = ', '.join(['?' for _ in query_id])
@@ -438,12 +441,12 @@ def select_query(table_name:str, query_id:tuple=None):
 
     try:
         # Check if the inputs are valid
-        if query_id:
-            verify_query(table_name=table_name, query_id=query_id)
-            columns = ', '.join(query_id)
-        else:
-            verify_query(table_name=table_name, query_id=None)
-            columns = '*'
+        if not verify_query(table_name=table_name, query_id=query_id):
+            raise ValueError("Invalid table or column name used!")
+        
+        # Format quiered columns
+        if query_id: columns = ', '.join(query_id)
+        else: columns = '*'
         
         # Build Input query string
         query = f"SELECT {columns} FROM {table_name}"
