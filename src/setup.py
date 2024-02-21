@@ -1,7 +1,7 @@
 '''
 NOTE: This is a single use program used to generate a json file used for populating the database tables
 '''
-import random, sqlite3, json, utils, database
+import sys, random, sqlite3, json, utils, database
 from datetime import datetime
 
 LOGGER = utils.LOGGER
@@ -188,14 +188,14 @@ def gen_customers():
         address = random.choice(STREET_ADDRESSES)
         city, state = random.choice(CITY_STATE)
 
-        contact_info = gen_contacts()
+        contacts = gen_contacts()
 
         customers.append({
             'cname': full_name, 
             'address': address, 
             'city': city, 
             'state': state,
-            'contact_info': contact_info
+            'contacts': contacts
         })
 
     return customers
@@ -230,7 +230,7 @@ def gen_owners():
             })
 
         owners.append({
-            'name': full_name,
+            'oname': full_name,
             'restaurants': restaurants
         })
     
@@ -346,8 +346,8 @@ def to_json(file:str='data.json'):
 # ==============================================================================================================
 # POPULATING THE DATABASE
 # ==============================================================================================================
-class Creation:
-    def __int__(self):
+class Init_db:
+    def __init__(self):
         '''
         Initializes the Creation class by getting the randomly generated customer and owner data. The data is then added
         to the database afterwhich the reservation data is created and then added to the database
@@ -356,6 +356,7 @@ class Creation:
         
         Output(s): None
         '''
+        
         # Clear all database tables
         database.clear_tables()
 
@@ -378,9 +379,10 @@ class Creation:
             True if the customers and contacts are successfully added to the database, else False
         '''
         try:
+            LOGGER.info("Adding customers and contact info to database...")
+
             # Add all the customers to the database
             for customer in self.customers:
-
                 # Add the customer and get their primary key
                 key = database.insert_customer(
                     cname=customer['cname'],
@@ -396,7 +398,8 @@ class Creation:
                         type=contact['type'],
                         value=contact['value']
                     )
-        
+
+            LOGGER.info("Successfully added customers and contact info to the database!")
             return True
         
         except Exception as e:
@@ -416,9 +419,10 @@ class Creation:
         '''
 
         try:
+            LOGGER.info("Adding Owners and Restaurants to database...")
+
             # Add all the owners to the database
             for owner in self.owners:
-
                 # Add the owner and get their primary key
                 key = database.insert_owner(
                     oname=owner['oname']
@@ -433,7 +437,8 @@ class Creation:
                         rating=restaurant['rating'],
                         ownerID=key
                     )
-        
+
+            LOGGER.info("Successfully added Owners and Restaurants to the database!")
             return True
         
         except Exception as e:
@@ -452,6 +457,7 @@ class Creation:
             True if the reservations are successfully added to the database, else False
         '''
         try:
+            LOGGER.info("Adding reservations to database...")
             reservations = gen_reservations()
 
             for reservation in reservations:
@@ -462,6 +468,8 @@ class Creation:
                     num_adults=reservation['num_adults'],
                     num_child=reservation['num_child']
                 )
+
+            LOGGER.info("Successfully added Reservations to the database!")
             return True
         
         except Exception as e:
@@ -470,4 +478,18 @@ class Creation:
     
 # ==============================================================================================================
 if __name__ == '__main__':
-    print(gen_date())
+
+    # Populate the tables with data
+    if(len(sys.argv) == 2 and sys.argv[1] == "-g"):
+        db = Init_db()
+
+    # Migrate data to json file
+    elif(len(sys.argv) == 2 and sys.argv[1] == "-j"):
+        to_json(file='data.json')
+
+    # Print table data to screen
+    elif(len(sys.argv) == 2 and sys.argv[1] == "-p"):
+        database.print_tables()
+
+    else:
+        print(gen_date())
