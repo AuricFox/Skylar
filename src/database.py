@@ -270,12 +270,11 @@ def insert_owner(oname:str):
     Output(s):
         A primary key (int) that represents the owner in the Owner table if added, else None
     '''
-
     try:
-        with sqlite3.connect('Skylar.db') as conn:      
+        with sqlite3.connect('Skylar.db') as conn:
 
             c = conn.cursor()
-            c.execute("INSERT INTO Owner (oname) VALUES (?)", (oname))
+            c.execute("INSERT INTO Owner (oname) VALUES (?)", (oname,))
             conn.commit()
 
             key = c.lastrowid

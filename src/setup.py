@@ -487,6 +487,10 @@ if __name__ == '__main__':
     elif(len(sys.argv) == 2 and sys.argv[1] == "-j"):
         to_json(file='data.json')
 
+    # Clear database tables
+    elif(len(sys.argv) == 2 and sys.argv[1] == "-c"):
+        database.clear_tables()
+
     # Print table data to screen
     elif(len(sys.argv) == 2 and sys.argv[1] == "-p"):
         database.print_tables()
