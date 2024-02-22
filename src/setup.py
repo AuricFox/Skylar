@@ -315,14 +315,14 @@ def gen_reservations():
     return reservations
 
 # ==============================================================================================================
-# MIGRATING THE DATA FROM THE TABLES TO A JSON FILE
+# MIGRATING THE DATA
 # ==============================================================================================================
 def to_json(file:str='data.json'):
     '''
     Migrates the data in the database to a JSON file
 
     Parameter(s):
-        file (str, default=data.json): file where the migrated data is saved
+        file (str, default=data.json): a file where the migrated data is saved
 
     Output(s):
         A jSON file containing the migrated data
@@ -342,7 +342,89 @@ def to_json(file:str='data.json'):
 
     except Exception as e:
         LOGGER.error(f"An error occured when migrating data to a json file: {e}")
+
+# ==============================================================================================================
+def from_json(file:str='data.json'):
+    '''
+    Migrates data from a JSON file to the database
     
+    Parameter(s):
+        file (str, default=data.json): a json file where the data is being migrated from
+
+    JSON Format:
+        {
+            "Customer": [{
+                "cid": int, 
+                "cname": name, 
+                "address": street_address, 
+                "city": city, 
+                "state": state_abbreviation
+            }, ... ],
+            
+            "ContactInfo": [{
+                "cid": int, 
+                "type": email/home/cell, 
+                "value": contact
+            }, ... ],
+            
+            "Owner": [{
+                "Oid": int, 
+                "oname": name
+            }, ... ],
+            
+            "Restaurant": [{
+                "rid": int, 
+                "rname": restaurant_name, 
+                "city": city, 
+                "state": state_abbreviation, 
+                "rating": int, 
+                "ownerID": int
+            }, ... ],
+
+            "Reservation": [{
+                "cid": int, 
+                "rid": int, 
+                "date": YYYY-MM-DD HH:MM, 
+                "num_adults": int, 
+                "num_child": int
+            }, ... ]
+        }
+    
+    Output(s):
+        True if the data is successfully migrated to the database, else False
+    '''
+    try:
+        LOGGER.info("Migrating data from JSON file ....")
+        # Read data from the JSON file
+        with open(file, "r") as f:
+            data = json.load(f)
+
+        # Iterating over the json data
+        for table_name,values in data.items():
+            # Iterating over the table elements
+            for row in values:
+                query_id = tuple(row.keys())
+                query_set = tuple(row.values())
+
+                success = database.insert_query(table_name=table_name, query_id=query_id, query_set=query_set)
+                
+                if not success:
+                    LOGGER.warning(f"Failed to insert data into table {table_name}: {query_set}")
+        
+        LOGGER.info("Successfully migrated data from JSON file!")
+        return True
+    
+    except FileNotFoundError:
+        LOGGER.error(f"File '{file}' not found!")
+        return False
+    
+    except json.JSONDecodeError as e:
+        LOGGER.error(f"Error decoding JSON file '{file}': {e}")
+        return False
+    
+    except Exception as e:
+        LOGGER.error(f"An error occurred when migrating data from JSON file '{file}': {e}")
+        return False
 # ==============================================================================================================
 # POPULATING THE DATABASE
 # ==============================================================================================================
