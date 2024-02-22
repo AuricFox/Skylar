@@ -4,6 +4,8 @@ from tabulate import tabulate
 LOGGER = utils.LOGGER
 
 # ==============================================================================================================
+# ADMIN TABLE FUNCTIONS
+# ==============================================================================================================
 def create_tables():
     '''
     Initializes the empty tables.
@@ -170,38 +172,7 @@ def print_tables():
             conn.commit()
 
 # ==============================================================================================================
-def db_query(query:str):
-    '''
-    Executes a user defined CRUD operation in the database
-
-    Parameter(s):
-        query (str): user defined 
-
-    Output(s):
-        repsonse (list, default=[]): a list of tuples containing the relanvent data to the query, else an 
-        empty list if the query fails or the query isn't a SELECT type (create, update, or delete)
-    '''
-    response = []
-
-    try:
-        with sqlite3.connect('Skylar.db') as conn:
-            c = conn.cursor()
-
-            LOGGER.info(f"Executing Query:\n{query}")
-            c.execute(query)
-
-            # Get selected data if there is any
-            if query.strip().upper().startswith('SELECT'):
-                response = c.fetchall()
-
-            conn.commit()
-
-        return response
-    
-    except sqlite3.Error as e:
-        LOGGER.error(f"An error occurred when executing the query {query}: {e}")
-        return response
-
+# DATABASE INSERTION FUNCTIONS
 # ==============================================================================================================
 def insert_customer(cname:str, address:str, city:str, state:str):
     '''
@@ -344,6 +315,8 @@ def insert_reservation(cid:int, rid:int, date:str, num_adults:int, num_child:int
         return False
 
 # ==============================================================================================================
+# ABSTRACT DATABASE FUNCTIONS
+# ==============================================================================================================
 def verify_query(table_name:str, query_id:tuple):
     '''
     Verifies the user defined inputs to mitigate sql injection
@@ -475,6 +448,39 @@ def select_query(table_name:str, query_id:tuple=None):
     return response
     
 # ==============================================================================================================
+def db_query(query:str):
+    '''
+    Executes a user defined CRUD operation in the database
+
+    Parameter(s):
+        query (str): user defined 
+
+    Output(s):
+        repsonse (list, default=[]): a list of tuples containing the relanvent data to the query, else an 
+        empty list if the query fails or the query isn't a SELECT type (create, update, or delete)
+    '''
+    response = []
+
+    try:
+        with sqlite3.connect('Skylar.db') as conn:
+            c = conn.cursor()
+
+            LOGGER.info(f"Executing Query:\n{query}")
+            c.execute(query)
+
+            # Get selected data if there is any
+            if query.strip().upper().startswith('SELECT'):
+                response = c.fetchall()
+
+            conn.commit()
+
+        return response
+    
+    except sqlite3.Error as e:
+        LOGGER.error(f"An error occurred when executing the query {query}: {e}")
+        return response
+
+# ==============================================================================================================   
 if __name__ == "__main__":
     '''
     Handles command line entries to manually set the database tables
