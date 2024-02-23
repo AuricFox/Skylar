@@ -147,11 +147,11 @@ def gen_contacts(minc:int=0, maxc:int=3):
     contacts = []
 
     if minc < 0 or maxc < 0:
-        LOGGER.warning("The number of contacts cannot be negative!")
+        LOGGER.warning(f"The number of contacts cannot be negative: min: {minc}, max: {maxc}")
         return contacts
     
     if maxc < minc:
-        LOGGER.warning("The maximum number of contacts must be greater than the minimum number of contacts!")
+        LOGGER.warning(f"The maximum number of contacts must be greater than the minimum number of contacts: min: {minc}, max: {maxc}")
         return contacts
 
     contact_types = ['email', 'home', 'cell']
@@ -195,7 +195,15 @@ def gen_customers(num:int=100, minc:int=0, maxc:int=3):
     customers = []
 
     if num < 0:
-        LOGGER.warning("Number of customers must be positive!")
+        LOGGER.warning(f"Number of customers must be positive: {num}")
+        return customers
+    
+    if minc < 0 or maxc < 0:
+        LOGGER.warning(f"The number of contacts cannot be negative: min: {minc}, max: {maxc}")
+        return customers
+    
+    if maxc < minc:
+        LOGGER.warning(f"The maximum number of contacts must be greater than the minimum number of contacts: min: {minc}, max: {maxc}")
         return customers
 
     for i in range(num):
@@ -219,23 +227,37 @@ def gen_customers(num:int=100, minc:int=0, maxc:int=3):
     return customers
 
 # ==============================================================================================================
-def gen_owners():
+def gen_owners(num:int=25, min_res:int=0, max_res:int=5):
     '''
     Generates a list of owners and the restaurants they own
     
-    Parameter(s): None
+    Parameter(s):
+        num (int, default=25): number of owners
+        min_res (int, default=0): minimum number of owned restaurants
+        max_res (int, default=5): maximum number of owned restaurants
     
     Output(s):
         A dictionary list of restaurant owner infomation
     '''
     owners = []
 
-    for _ in range(25):
+    if num < 0:
+        LOGGER.error(f"The number of owners must be positive: {num}")
+
+    if min_res < 0 or max_res < 0:
+        LOGGER.error(f"Number of restaurants must be positive: min: {min_res}, max: {max_res}")
+        return owners
+
+    if max_res < min_res:
+        LOGGER.error(f"The maximum number of restaurants must be greater then the minimum number of restaurants: min: {min_res}, max: {max_res}")
+        return owners
+
+    for _ in range(num):
         full_name = ' '.join(random.choice(NAMES))
         restaurants = []
 
         # Build a list of the owner's restaurants
-        for _ in range(random.randint(0,5)):
+        for _ in range(random.randint(min_res, max_res)):
             restaurant = random.choice(RESTAURANTS)
             city, state = random.choice(CITY_STATE)
             rating = random.randint(0,5)
