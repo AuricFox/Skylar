@@ -624,26 +624,32 @@ class Init_db:
     
 # ==============================================================================================================
 if __name__ == '__main__':
+    '''
+    Handles command-line inputs
+    
+    Parameter(s):
+        ./setup.py [flag] [filename]
 
-    # Populate the tables with data
-    if(len(sys.argv) == 2 and sys.argv[1] == "-g"):
-        db = Init_db()
+    Flag(s):
+        -g: generate tables
+        -t: migrate data from tables to a JSON file
+        -f: migrate data from a JSON file to the database tables
+        -c: clear data from tables
+        -p: print tabulated data from tables
+    
+    Output(s):
+        -g: None, populates the database tables
+        -t: a JSON file containing the migrated data
+        -f: None, migrates the data to the database tables
+        -c: None, clears all tables
+        -p: None, prints the data to the command terminal
+    '''
 
-    # Migrate data to json file
-    elif(len(sys.argv) == 2 and sys.argv[1] == "-t"):
-        to_json(file='data.json')
-
-    # Migrate data from json file
-    elif(len(sys.argv) == 2 and sys.argv[1] == "-f"):
-        from_json(file='data.json')
-
-    # Clear database tables
-    elif(len(sys.argv) == 2 and sys.argv[1] == "-c"):
-        database.clear_tables()
-
-    # Print table data to screen
-    elif(len(sys.argv) == 2 and sys.argv[1] == "-p"):
-        database.print_tables()
-
-    else:
-        print(len(NAMES))
+    if(len(sys.argv) == 2 and sys.argv[1] == "-g"): db = Init_db()                  # Populate the tables with data
+    elif(len(sys.argv) == 2 and sys.argv[1] == "-t"): to_json(file='data.json')     # Migrate data to json file
+    elif(len(sys.argv) == 3 and sys.argv[1] == "-t"): to_json(file=sys.argv[2])     # Migrate data to a user defined json file
+    elif(len(sys.argv) == 2 and sys.argv[1] == "-f"): from_json(file='data.json')   # Migrate data from json file
+    elif(len(sys.argv) == 3 and sys.argv[1] == "-f"): from_json(file=sys.argv[2])   # Migrate data from a user defined json file
+    elif(len(sys.argv) == 2 and sys.argv[1] == "-c"): database.clear_tables()       # Clear database tables
+    elif(len(sys.argv) == 2 and sys.argv[1] == "-p"): database.print_tables()       # Print table data to screen
+    else: print("Invalid Arguments!")
