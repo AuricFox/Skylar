@@ -1,5 +1,6 @@
 # Skylar
-Programming practice for coding assessments and interviews. Focuses on SQL queries and databases.
+
+Skylar is web-base application for programming practice designed to help withcoding assessments and interviews. Skylar focuses on SQL queries and databases.
 
 ## Getting Started
 
@@ -27,6 +28,7 @@ To get started with Skylar, follow these steps:
 4. **Install Dependencies:**
     ```
     (env) pip install flask
+    (env) pip install sqlite3
     (env) pip install tabulate
     ```
 
