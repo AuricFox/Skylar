@@ -22,7 +22,8 @@ NAMES = [
     ('Elizabeth', 'Harrison'), ('Joshua', 'Gordon'), ('Aaliyah', 'Lynch'), ('David', 'Fisher'), ('Anna', 'Fowler'), ('Colton', 'Myers'),
     ('Mila', 'Sullivan'), ('Jonathan', 'Wallace'), ('Natalie', 'Lambert'), ('Nicholas', 'Lawrence'), ('Alyssa', 'Weaver'), ('Jordan', 'Bishop'),
     ('Lincoln', 'Barker'), ('Brianna', 'Pearson'), ('Hunter', 'Hansen'), ('Alexis', 'Keller'), ('Julian', 'Burns'), ('Claire', 'Bates'),
-    ('Jackson', 'Norton'), ('Stella', 'Hale'), ('Greyson', 'Griffin'), ('Lauren', 'Adams'), ('Mason', 'Black')
+    ('Jackson', 'Norton'), ('Stella', 'Hale'), ('Greyson', 'Griffin'), ('Lauren', 'Adams'), ('Mason', 'Black'), ('Jack', 'Brown'),
+    ('Peter', 'Williams'), ('Isaac', 'Newton'), ('Bill', 'Hayes'), ('Howard', 'Clark')
 ]
 
 CITY_STATE = [
@@ -179,25 +180,33 @@ def gen_contacts(minc:int=0, maxc:int=3):
     return contacts
 
 # ==============================================================================================================
-def gen_customers():
+def gen_customers(num:int=100, minc:int=0, maxc:int=3):
     '''
     Generates the customers and their info
 
-    Parameter(s): None
+    Parameter(s):
+        num (int, default=100): number of customers
+        minc (int, default=0): minimum number of contacts
+        maxc (int, default=3): maximum number of contacts
 
     Output(s):
         a dictionary list of customer information
     '''
     customers = []
 
-    # Iterate through all customer names
-    for name in NAMES:
+    if num < 0:
+        LOGGER.warning("Number of customers must be positive!")
+        return customers
+
+    for i in range(num):
+        # Get a name from the list
+        name = NAMES[i % len(NAMES)]
 
         full_name = f"{name[0]} {name[1]}"
         address = random.choice(STREET_ADDRESSES)
         city, state = random.choice(CITY_STATE)
 
-        contacts = gen_contacts()
+        contacts = gen_contacts(minc=minc, maxc=maxc)
 
         customers.append({
             'cname': full_name, 
@@ -591,4 +600,4 @@ if __name__ == '__main__':
         database.print_tables()
 
     else:
-        print(gen_date())
+        print(len(NAMES))
