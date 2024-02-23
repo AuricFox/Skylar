@@ -375,6 +375,11 @@ def to_json(file:str='data.json'):
         A jSON file containing the migrated data
     '''
     try:
+        LOGGER.info("Migrating data to JSON file ....")
+
+        if not utils.verify_file(file=file):
+            raise Exception("Invalid filename or type!")
+
         data = {
             'Customer': database.select_query(table_name='Customer'),
             'ContactInfo': database.select_query(table_name='ContactInfo'),
@@ -442,6 +447,10 @@ def from_json(file:str='data.json'):
     '''
     try:
         LOGGER.info("Migrating data from JSON file ....")
+
+        if not utils.verify_file(file=file):
+            raise Exception("Invalid filename or type!")
+        
         # Read data from the JSON file
         with open(file, "r") as f:
             data = json.load(f)
