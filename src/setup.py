@@ -277,17 +277,19 @@ def gen_owners(num:int=25, min_res:int=0, max_res:int=5):
     return owners
 
 # ==============================================================================================================
-def gen_date():
+def gen_date(start:int=2000, end:int=2030):
     '''
     Generates a random data (YYYY-MM-DD HH:MM)
     
-    Parameter(s): None
+    Parameter(s):
+        start (int, default=2000): starting year
+        end (int, default=2030): ending year
 
     Output(s):
         A randomly generated date as a string
     '''
 
-    year = random.randint(2000, 2030)
+    year = random.randint(start, end)
     month = random.randint(1, 12)
 
     # Month of February
