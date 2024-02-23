@@ -509,4 +509,4 @@ if __name__ == "__main__":
     elif(sys.argv[1] == "-p"): print_tables()
 
     else:
-        print("Invalid Arguments!\nCreate Tables: -c\nDelete Tables: -d\n")
+        print("Invalid Arguments!\nCreate Tables: -c\nDelete Tables: -d\nPrint Tables: -p\n")
