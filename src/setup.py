@@ -476,12 +476,28 @@ def from_json(file:str='data.json'):
 # POPULATING THE DATABASE
 # ==============================================================================================================
 class Init_db:
-    def __init__(self):
+    def __init__(
+            self,
+            num_customers:int = 100,
+            min_contacts:int = 0,
+            max_contacts:int = 3,
+            num_owers:int = 25,
+            min_restaurants:int = 0,
+            max_restaurants:int = 5,
+            num_reservations:int = 30
+    ):
         '''
         Initializes the Creation class by getting the randomly generated customer and owner data. The data is then added
         to the database afterwhich the reservation data is created and then added to the database
         
-        Parameter(s): None
+        Parameter(s):
+            num_customers (int, default=100): number of customers
+            min_contacts (int, default=0): minimum number of customer contacts
+            max_contacts (int, default=3): maximum number of customer contacts
+            num_owers (int, default=25): number of owners
+            min_restaurants (int, default=0): minimum number of restaurants that can be owned
+            max_restaurants (int, default=5): maximum number of restaurants that can be owned
+            num_reservations (int, default=30): number of reservations
         
         Output(s): None
         '''
@@ -489,12 +505,12 @@ class Init_db:
         # Clear all database tables
         database.clear_tables()
 
-        self.customers = gen_customers()
-        self.owners = gen_owners()
+        self.customers = gen_customers(num=num_customers, minc=min_contacts, maxc=max_contacts)
+        self.owners = gen_owners(num=num_owers, min_res=min_restaurants, max_res=max_restaurants)
 
         self.add_customers()
         self.add_owners()
-        self.add_reservations()
+        self.add_reservations(num=num_reservations)
     
     # ----------------------------------------------------------------------------------------------------------
     def add_customers(self):
@@ -575,19 +591,20 @@ class Init_db:
             return False
     
     # ----------------------------------------------------------------------------------------------------------
-    def add_reservations(self):
+    def add_reservations(self, num:int=30):
         '''
         Populates the Reservation table in the database
+        NOTE:The Customer and Restaurant tables must be populated
 
         Parameter(s):
-            The Customer and Restaurant tables must be populated
+            num (int, default=30): number of reservations
 
         Output(s):
             True if the reservations are successfully added to the database, else False
         '''
         try:
             LOGGER.info("Adding reservations to database...")
-            reservations = gen_reservations()
+            reservations = gen_reservations(num=num)
 
             for reservation in reservations:
                 database.insert_reservation(
