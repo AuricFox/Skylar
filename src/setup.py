@@ -132,20 +132,30 @@ def gen_email():
     return email
 
 # ==============================================================================================================
-def gen_contacts():
+def gen_contacts(minc:int=0, maxc:int=3):
     '''
     Generates the contacts for an individual customer
 
-    Parameter(s): None
+    Parameter(s):
+        minc (int, default=0): minimum number of contacts
+        maxc (int, default=3): maximum number of contacts
 
     Output(s):
         A dictionary of email or phone numbers used as contacts
     '''
-    contact_types = ['email', 'home', 'cell']
-    # The customer can have between 0 and 4 contacts
-    num_contacts = random.randint(0,4)
-
     contacts = []
+
+    if minc < 0 or maxc < 0:
+        LOGGER.warning("The number of contacts cannot be negative!")
+        return contacts
+    
+    if maxc < minc:
+        LOGGER.warning("The maximum number of contacts must be greater than the minimum number of contacts!")
+        return contacts
+
+    contact_types = ['email', 'home', 'cell']
+    # The range of contacts a customer can have
+    num_contacts = random.randint(minc, maxc)
 
     # Iterate thru the number of contacts
     for _ in range(num_contacts):
@@ -161,9 +171,8 @@ def gen_contacts():
         # Append to the phone number list
         else:
             p_type, num = gen_number()
-
             contacts.append({
-                'type': p_type,
+                'type': p_type, 
                 'value': num
             })
 
