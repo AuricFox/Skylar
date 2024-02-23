@@ -309,19 +309,24 @@ def gen_date(start:int=2000, end:int=2030):
     return date_time.strftime('%Y-%m-%d %H:%M')
 
 # ==============================================================================================================
-def gen_reservations():
+def gen_reservations(num:int=30):
     '''
     Generates a list of reservation data
 
     NOTE: Must be run after the customer and restaurant data has been added to the tables,
     Otherwise no reservations will be created.
 
-    Parameter(s): None
+    Parameter(s):
+        num (int, default=30): number of reservations
 
     Output(s):
         A dictionary list of reservation information
     '''
     reservations = []
+
+    if num < 0:
+        LOGGER.error(f"Number of reservations must be positive: {num}")
+        return reservations
 
     try:
         with sqlite3.connect('Skylar.db') as conn:      
@@ -340,12 +345,12 @@ def gen_reservations():
             if customers == [] or restaurants == []: 
                 return restaurants
 
-            # Create 30 reservations
-            for _ in range(30):
+            # Generate random reservations
+            for _ in range(num):
 
                 reservations.append({
-                    'cid': random.choice(customers)[0],
-                    'rid': random.choice(restaurants)[0],
+                    'cid': random.choice(customers)[0],     # Save customer cid
+                    'rid': random.choice(restaurants)[0],   # Save restaurant rid
                     'date': gen_date(),
                     'num_adults': random.randint(1,20),
                     'num_child': random.randint(0,20)
