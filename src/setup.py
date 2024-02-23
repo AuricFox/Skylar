@@ -329,7 +329,7 @@ def to_json(file:str='data.json'):
     '''
     try:
         data = {
-            'Cutomer': database.select_query(table_name='Customer'),
+            'Customer': database.select_query(table_name='Customer'),
             'ContactInfo': database.select_query(table_name='ContactInfo'),
             'Owner': database.select_query(table_name='Owner'),
             'Restaurant': database.select_query(table_name='Restaurant'),
@@ -566,8 +566,12 @@ if __name__ == '__main__':
         db = Init_db()
 
     # Migrate data to json file
-    elif(len(sys.argv) == 2 and sys.argv[1] == "-j"):
+    elif(len(sys.argv) == 2 and sys.argv[1] == "-t"):
         to_json(file='data.json')
+
+    # Migrate data from json file
+    elif(len(sys.argv) == 2 and sys.argv[1] == "-f"):
+        from_json(file='data.json')
 
     # Clear database tables
     elif(len(sys.argv) == 2 and sys.argv[1] == "-c"):
