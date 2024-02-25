@@ -16,7 +16,7 @@ app.secret_key = 'my_super_secret_totaly_unbreakable_key'
 # ====================================================================
 
 @app.route("/")
-@app.route("/home")
+@app.route("/home", methods=["POST", "GET"])
 def home():
     return render_template('home.html')
 
