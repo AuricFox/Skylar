@@ -13,6 +13,14 @@
 </head>
 
 <body>
+    <div id="nav-bar">
+        <ul class="nav">
+            <li>
+                <a href="{{  url_for('home')  }}" class="nav-tile">Home</a>
+            </li>
+        </ul>
+    </div>
+
     <!-- Flash messages -->
     <div id="flash-messages">
         {% with messages = get_flashed_messages() %}
