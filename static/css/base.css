@@ -37,3 +37,46 @@ body {
 .content {
     flex: 1;
 }
+
+/* ========== Nav Bar ========== */
+
+#nav-bar {
+    padding: 10px 0px 10px 5px;
+    margin-bottom: 1rem;
+    background-color: rgba(0, 0, 0, 0.2);
+    display: flex;
+    flex-direction: row;
+}
+
+.nav {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+}
+
+.nav li {
+    display: inline;
+    float: left;
+}
+
+.nav-tile {
+    font-size: 15px;
+    font-family: Arial, sans-serif;
+    font-weight: bold;
+    font-style: italic;
+    display: block;
+    color: #FFFFFF;
+    text-align: center;
+    padding: 14px;
+    text-decoration: none;
+}
+
+.active {
+    background: #0d4600;
+}
+
+.nav-tile:hover {
+    background: #267315;
+    cursor: pointer;
+}
