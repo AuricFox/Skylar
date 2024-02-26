@@ -480,7 +480,39 @@ def db_query(query:str):
         LOGGER.error(f"An error occurred when executing the query {query}: {e}")
         return response
 
-# ==============================================================================================================   
+# ==============================================================================================================
+def get_tables():
+    '''
+    Retrieves all the tables and their column names in the Skylar database
+    
+    Parameter(s): None
+    
+    Output(s):
+        response (dict): a dictionary containing the table names as keys and a list of the column names as values
+    ''' 
+    response = {}
+    try:
+        with sqlite3.connect('Skylar.db') as conn:
+            c = conn.cursor()
+
+            # Get all the table names in the database
+            LOGGER.info(f"Retrieving table info from the database ...")
+            c.execute('SELECT * FROM sqlite_master WHERE type="table" AND name NOT LIKE "sqlite_%"')
+            tables = [table[1] for table in c.fetchall()]
+
+            # Get the column names of the tables
+            for table in tables:
+                c.execute(f"PRAGMA table_info({table})")
+                columns_info = c.fetchall()
+                response[table] = [info[1] for info in columns_info]
+
+        return response
+    
+    except sqlite3.Error as e:
+        LOGGER.error(f"An error occurred when retrieving tables info from the database: {e}")
+        return response
+
+# ==============================================================================================================
 if __name__ == "__main__":
     '''
     Handles command line entries to manually set the database tables
@@ -499,10 +531,10 @@ if __name__ == "__main__":
 
     # python .\phylogeny.py input_file
     if(len(sys.argv) != 2):
-        print(f"Only two inputs allowed, {len(sys.argv)} were entered!")
-
+        print(get_tables())
+        #print(f"Only two inputs allowed, {len(sys.argv)} were entered!")
     # Create Tables
-    if(sys.argv[1] == "-c"): create_tables()
+    elif(sys.argv[1] == "-c"): create_tables()
     # Delete Tables
     elif(sys.argv[1] == "-d"): clear_tables()
     # Print Tables
