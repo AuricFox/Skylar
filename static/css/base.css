@@ -80,3 +80,69 @@ body {
     background: #267315;
     cursor: pointer;
 }
+
+/* ========== Flash Messages ========== */
+
+#flash-messages {
+    margin: 0 4rem 1rem 4rem;
+    height: 2rem;
+    overflow: hidden;
+}
+
+.flash-message {
+    padding: 5px;
+    background-color: red;
+    color: #FFFFFF;
+    text-align: center;
+    font-weight: bold;
+    border-radius: 4px;
+    box-shadow: 4px 4px 8px #000;
+}
+
+/* ========== Content ========== */
+
+.content {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+/* ========== Section ========== */
+
+.section {
+    display: flex;
+    flex-direction: row;
+    margin: 0 2rem 2rem 2rem;
+}
+
+#schema, #terminal {
+    padding: 1rem;
+    border: 1px solid white;
+    width: 50%;
+}
+
+#divider {
+    width: 5px;
+    height: 100;
+    cursor: ew-resize;
+    border: 1px solid red;
+}
+
+.table-name {
+    font-size: larger;
+    color: #FFFFFF;
+    font-family: fantasy;
+}
+
+table:not(:last-child) {
+    margin-bottom: 1rem;
+}
+
+th {
+    color:#FFFFFF;
+    text-align: left;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 8px;
+}
+
