@@ -531,14 +531,19 @@ if __name__ == "__main__":
 
     # python .\phylogeny.py input_file
     if(len(sys.argv) != 2):
-        print(get_tables())
-        #print(f"Only two inputs allowed, {len(sys.argv)} were entered!")
+        print(f"Only two inputs allowed, {len(sys.argv)} were entered!")
     # Create Tables
     elif(sys.argv[1] == "-c"): create_tables()
     # Delete Tables
     elif(sys.argv[1] == "-d"): clear_tables()
     # Print Tables
     elif(sys.argv[1] == "-p"): print_tables()
+    # Print table info
+    elif(sys.argv[1] == "-i"): print(get_tables())
 
     else:
-        print("Invalid Arguments!\nCreate Tables: -c\nDelete Tables: -d\nPrint Tables: -p\n")
+        print(f"Invalid Arguments!\n"
+              f"Create Tables: -c\n"
+              f"Delete Tables: -d\n"
+              f"Print Tables: -p\n"
+              f"Print Table Info: -i\n")
