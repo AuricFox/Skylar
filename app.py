@@ -4,7 +4,7 @@ import os
 import sys
 
 sys.path.append('./src/')
-import utils
+import utils, database
 
 LOGGER = utils.LOGGER
 
@@ -14,16 +14,18 @@ app.secret_key = 'my_super_secret_totaly_unbreakable_key'
 # ====================================================================
 # Main Pages
 # ====================================================================
-
 @app.route("/")
 @app.route("/home", methods=["POST", "GET"])
 def home():
-    return render_template('home.html')
+    data = database.get_tables()
 
+    return render_template('home.html', data=data)
+
+# ====================================================================
 # Custom page not found
-@app.errorhandler(404)
+'''@app.errorhandler(404)
 def page_not_found():
-    return render_template('404.html'), 404
+    return render_template('404.html'), 404'''
 
 # ====================================================================
 # Run Main
