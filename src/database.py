@@ -1,8 +1,9 @@
-import sqlite3, sys, utils
+import sqlite3, sys, os, utils
 from tabulate import tabulate
 
 LOGGER = utils.LOGGER
-DATABASE = 'Skylar.db'
+PATH = os.path.dirname(os.path.abspath(__file__))
+DATABASE = os.path.join(PATH, 'Skylar.db')
 
 # ==============================================================================================================
 # ADMIN TABLE FUNCTIONS
