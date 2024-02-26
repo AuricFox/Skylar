@@ -329,33 +329,24 @@ def gen_reservations(num:int=30):
         return reservations
 
     try:
-        with sqlite3.connect('Skylar.db') as conn:      
-
-            c = conn.cursor()
-
-            # Get all customer id's
-            c.execute("SELECT cid FROM Customer")
-            customers = c.fetchall()
-
-            # Get all restaurant id's
-            c.execute("SELECT rid FROM Restaurant")
-            restaurants = c.fetchall()
-            
-            # No reservations can be placed
-            if customers == [] or restaurants == []: 
-                return restaurants
-
-            # Generate random reservations
-            for _ in range(num):
-
-                reservations.append({
-                    'cid': random.choice(customers)[0],     # Save customer cid
-                    'rid': random.choice(restaurants)[0],   # Save restaurant rid
-                    'date': gen_date(),
-                    'num_adults': random.randint(1,20),
-                    'num_child': random.randint(0,20)
-                })
+        # Get all customer id's
+        customers = database.select_query(table_name='Customer', query_id=('cid',))
+        # Get all restaurant id's
+        restaurants = database.select_query(table_name='Restaurant', query_id=('rid',))
         
+        # No reservations can be placed
+        if customers == [] or restaurants == []: 
+            return restaurants
+        # Generate random reservations
+        for _ in range(num):
+            reservations.append({
+                'cid': random.choice(customers)['cid'],     # Save customer cid
+                'rid': random.choice(restaurants)['rid'],   # Save restaurant rid
+                'date': gen_date(),
+                'num_adults': random.randint(1,20),
+                'num_child': random.randint(0,20)
+            })
+    
     except Exception as e:
         LOGGER.error(f"An error occured when generating reservations: {e}")
     
