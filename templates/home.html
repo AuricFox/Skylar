@@ -5,27 +5,31 @@
 
 {% block content %}
 
-<div class="section" id="schema">
-    <!-- Place DB Schema Here-->
-    {% for table, columns in data.items() %}
-        <div>
-            {{ table }}
-        </div>
-        <table>
-            <tbody>
-                <tr>
-                    {% for column in columns %}
-                    <td>{{ column }}</td>
-                    {% endfor %}
-                </tr>
-            </tbody>
-        </table>
-    {% endfor %}
-</div>
+<div  class="section">
+    <div id="schema">
+        <!-- Place DB Schema Here-->
+        {% for table, columns in data.items() %}
+            <div class="table-name">
+                {{ table }}
+            </div>
+            <table>
+                <thead>
+                    <tr>
+                        {% for column in columns %}
+                        <th>{{ column }}</th>
+                        {% endfor %}
+                    </tr>
+                </thead>
+            </table>
+        {% endfor %}
+    </div>
 
-<div class="section" id="terminal">
-    <!-- Place Form Input Here-->
+    <div id="divider"></div>
 
+    <div id="terminal">
+        <!-- Place Form Input Here-->
+
+    </div>
 </div>
 
 {% endblock %}
