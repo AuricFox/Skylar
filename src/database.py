@@ -2,6 +2,7 @@ import sqlite3, sys, utils
 from tabulate import tabulate
 
 LOGGER = utils.LOGGER
+DATABASE = 'Skylar.db'
 
 # ==============================================================================================================
 # ADMIN TABLE FUNCTIONS
@@ -17,7 +18,7 @@ def create_tables():
     '''
     
     try:
-        with sqlite3.connect('Skylar.db') as conn:      
+        with sqlite3.connect(DATABASE) as conn:      
 
             c = conn.cursor()
             # Force forgein key support
@@ -94,7 +95,7 @@ def clear_tables():
     '''
 
     try:
-        with sqlite3.connect('Skylar.db') as conn:
+        with sqlite3.connect(DATABASE) as conn:
             c = conn.cursor()
 
             # Customer Elements
@@ -136,7 +137,7 @@ def print_tables():
         Prints tables to command terminal
     '''
 
-    with sqlite3.connect('Skylar.db') as conn:
+    with sqlite3.connect(DATABASE) as conn:
             c = conn.cursor()
 
             # Print Customer table data
@@ -189,7 +190,7 @@ def insert_customer(cname:str, address:str, city:str, state:str):
     '''
 
     try:
-        with sqlite3.connect('Skylar.db') as conn:      
+        with sqlite3.connect(DATABASE) as conn:      
 
             c = conn.cursor()
             c.execute("INSERT INTO Customer (cname, address, city, state) VALUES (?,?,?,?)", (cname, address, city, state))
@@ -218,7 +219,7 @@ def insert_contact(key:int, type:str, value:str):
     '''
 
     try:
-        with sqlite3.connect('Skylar.db') as conn:      
+        with sqlite3.connect(DATABASE) as conn:      
 
             c = conn.cursor()
             c.execute("INSERT INTO ContactInfo (cid, type, value) VALUES (?,?,?)", (key, type, value))
@@ -242,7 +243,7 @@ def insert_owner(oname:str):
         A primary key (int) that represents the owner in the Owner table if added, else None
     '''
     try:
-        with sqlite3.connect('Skylar.db') as conn:
+        with sqlite3.connect(DATABASE) as conn:
 
             c = conn.cursor()
             c.execute("INSERT INTO Owner (oname) VALUES (?)", (oname,))
@@ -273,7 +274,7 @@ def insert_restaurant(rname:str, city:str, state:str, rating:int, ownerID:int):
     '''
 
     try:
-        with sqlite3.connect('Skylar.db') as conn:
+        with sqlite3.connect(DATABASE) as conn:
 
             c = conn.cursor()
             c.execute("INSERT INTO Restaurant (rname, city, state, rating, ownerID) VALUES (?,?,?,?,?)", (rname, city, state, rating, ownerID))
@@ -302,7 +303,7 @@ def insert_reservation(cid:int, rid:int, date:str, num_adults:int, num_child:int
     '''
 
     try:
-        with sqlite3.connect('Skylar.db') as conn:      
+        with sqlite3.connect(DATABASE) as conn:      
 
             c = conn.cursor()
             c.execute("INSERT INTO Reservation (cid, rid, date, num_adults, num_child) VALUES (?,?,?,?,?)", (cid, rid, date, num_adults, num_child))
@@ -384,7 +385,7 @@ def insert_query(table_name:str, query_id:tuple, query_set:tuple):
         columns = ', '.join(query_id)
         query = f"INSERT INTO {table_name} ({columns}) VALUES ({placeholders})"
 
-        with sqlite3.connect('Skylar.db') as conn:      
+        with sqlite3.connect(DATABASE) as conn:      
 
             c = conn.cursor()
             c.execute(query, query_set)
@@ -424,7 +425,7 @@ def select_query(table_name:str, query_id:tuple=None):
         # Build Input query string
         query = f"SELECT {columns} FROM {table_name}"
 
-        with sqlite3.connect('Skylar.db') as conn:      
+        with sqlite3.connect(DATABASE) as conn:      
             c = conn.cursor()
 
             # Get the column names of all fields
@@ -462,7 +463,7 @@ def db_query(query:str):
     response = []
 
     try:
-        with sqlite3.connect('Skylar.db') as conn:
+        with sqlite3.connect(DATABASE) as conn:
             c = conn.cursor()
 
             LOGGER.info(f"Executing Query:\n{query}")
@@ -492,7 +493,7 @@ def get_tables():
     ''' 
     response = {}
     try:
-        with sqlite3.connect('Skylar.db') as conn:
+        with sqlite3.connect(DATABASE) as conn:
             c = conn.cursor()
 
             # Get all the table names in the database
