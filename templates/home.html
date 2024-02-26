@@ -7,6 +7,20 @@
 
 <div class="section" id="schema">
     <!-- Place DB Schema Here-->
+    {% for table, columns in data.items() %}
+        <div>
+            {{ table }}
+        </div>
+        <table>
+            <tbody>
+                <tr>
+                    {% for column in columns %}
+                    <td>{{ column }}</td>
+                    {% endfor %}
+                </tr>
+            </tbody>
+        </table>
+    {% endfor %}
 </div>
 
 <div class="section" id="terminal">
