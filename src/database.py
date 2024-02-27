@@ -141,35 +141,14 @@ def print_tables():
     with sqlite3.connect(DATABASE) as conn:
         c = conn.cursor()
 
-        # Print Customer table data
-        print("Customer Table Data:")
-        c.execute("SELECT * FROM Customer")
-        customers = c.fetchall()
-        print(tabulate(customers, headers=["cid", "cname", "address", "city", "state"], tablefmt="grid"))
+        # Get all table names
+        table_info = get_tables()
 
-        # Print ContactInfo table data
-        print("ContactInfo Table Data:")
-        c.execute("SELECT * FROM ContactInfo")
-        contacts = c.fetchall()
-        print(tabulate(contacts, headers=["cid", "type", "value"], tablefmt="grid"))
-
-        # Print Owner table data
-        print("Owner Table Data:")
-        c.execute("SELECT * FROM Owner")
-        owners = c.fetchall()
-        print(tabulate(owners, headers=["Oid", "oname"], tablefmt="grid"))
-
-        # Print Restaurant table data
-        print("Restaurant Table Data:")
-        c.execute("SELECT * FROM Restaurant")
-        restaurants = c.fetchall()
-        print(tabulate(restaurants, headers=["rid", "rname", "city", "state", "rating", "ownerID"], tablefmt="grid"))
-
-        # Print Reservation table data
-        print("Reservation Table Data:")
-        c.execute("SELECT * FROM Reservation")
-        reservations = c.fetchall()
-        print(tabulate(reservations, headers=["cid", "rid", "date", "num_adults", "num_child"], tablefmt="grid"))
+        for table, values in table_info.items():
+            print(f"{table} Table Data:")
+            c.execute(f"SELECT * FROM {table}")
+            data = c.fetchall()
+            print(tabulate(data, headers=values, tablefmt="grid"))
 
         conn.commit()
 
