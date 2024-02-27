@@ -8,15 +8,15 @@
 <div  class="section">
     <div id="schema">
         <div class="title">Database Schema</div>
-        {% for table, columns in data.items() %}
+        {% for table, columns in data['tables'].items() %}
             <div class="table-name">
                 {{ table }}
             </div>
-            <table>
+            <table class="schema-table">
                 <thead>
                     <tr>
                         {% for column in columns %}
-                        <th>{{ column }}</th>
+                            <th>{{ column }}</th>
                         {% endfor %}
                     </tr>
                 </thead>
@@ -27,11 +27,44 @@
     <div id="divider"></div>
 
     <div id="terminal">
-        <form action="#" method="post">
-            <textarea name="code" id="code" placeholder="Enter your code here..."></textarea>
+        <form action="{{ url_for('home') }}" method="post">
+            <textarea name="code" id="code" placeholder="Enter SQL query here..."></textarea>
             <button type="submit">Run Code</button>
         </form>
     </div>
+</div>
+
+<div class="response">
+    {% if data['data'] and data['column_id'] %}
+        <div class="title">Query Output</div>
+        <div class="table-section">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <!-- Column names -->
+                        {% for key in data['column_id'] %}
+                            <th>{{ key }}</th>
+                        {% endfor %}
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- List of tuple data -->
+                    {% for values in data['data'] %}
+                        <tr>
+                            <!-- Tuple data -->
+                            {% for value in values %}
+                                <td>{{ value }}</td>
+                            {% endfor %}
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% elif data['error'] %}
+        <div class="error">
+            {{ data['error'] }}
+        </div>
+    {% endif %}
 </div>
 
 {% endblock %}
