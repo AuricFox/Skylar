@@ -17,7 +17,14 @@ app.secret_key = 'my_super_secret_totaly_unbreakable_key'
 @app.route("/")
 @app.route("/home", methods=["POST", "GET"])
 def home():
-    data = database.get_tables()
+    data = {}
+
+    if request.method == 'POST':
+        
+        query = request.form.get('code', type=str)
+        data = database.db_query(query=query)
+
+    data['tables'] = database.get_tables()
 
     return render_template('home.html', data=data)
 
