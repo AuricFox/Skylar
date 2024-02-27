@@ -458,10 +458,17 @@ def db_query(query:str):
         query (str): user defined 
 
     Output(s):
-        repsonse (list, default=[]): a list of tuples containing the relanvent data to the query, else an 
-        empty list if the query fails or the query isn't a SELECT type (create, update, or delete)
+        repsonse (list, default={}): a dictionary containing the relanvent data to the query, an 
+        error message if the query fails, or an empty dict if the query isn't a SELECT type 
+        (create, update, or delete)
+
+        response = {
+            'column_id': [column_name1, column_name2, ... ],
+            'data': [(value_1, value_2, ...), (value_1, value_2, ...), ... ],
+            'error': 'Error Message'
+        }
     '''
-    response = []
+    response = {}
 
     try:
         with sqlite3.connect(DATABASE) as conn:
@@ -472,7 +479,8 @@ def db_query(query:str):
 
             # Get selected data if there is any
             if query.strip().upper().startswith('SELECT'):
-                response = c.fetchall()
+                response['column_id'] = [column[0] for column in c.description]     # Column names
+                response['data'] = c.fetchall()                                     # Queried data
 
             conn.commit()
 
@@ -480,6 +488,8 @@ def db_query(query:str):
     
     except sqlite3.Error as e:
         LOGGER.error(f"An error occurred when executing the query {query}: {e}")
+        response['error'] = f"An error occurred when executing the query {query}: {e}"
+
         return response
 
 # ==============================================================================================================
