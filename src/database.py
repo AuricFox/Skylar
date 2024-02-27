@@ -335,37 +335,29 @@ def insert_reservation(cid:int, rid:int, date:str, num_adults:int, num_child:int
 # ==============================================================================================================
 # ABSTRACT DATABASE FUNCTIONS
 # ==============================================================================================================
-def verify_query(table_name:str, query_id:tuple):
+def verify_query(table_name:str, query_id:tuple=None):
     '''
     Verifies the user defined inputs to mitigate sql injection
 
     Parameter(s):
         table_name (str): table where data is being added
-        query_id (tuple): column names where the data is being inserted
+        query_id (tuple, default=None): column names where the data is being queried
         
     Output(s):
         Returns True if the inputs are valid, esle False
     '''
-    allowed_tables = ['Customer', 'ContactInfo', 'Restaurant', 'Reservation', 'Owner']
-
     # Whitelist of allowed column names for each table
-    allowed_columns = {
-        'Customer': ['cid', 'cname', 'address', 'city', 'state'],
-        'ContactInfo': ['cid', 'type', 'value'],
-        'Restaurant': ['rid', 'rname', 'city', 'state', 'rating', 'ownerID'],
-        'Reservation': ['cid', 'rid', 'date', 'num_adults', 'num_child'],
-        'Owner': ['Oid', 'oname']        
-    }
+    table_info = get_tables()
 
     # Current table is not valid
-    if table_name not in allowed_tables:
+    if table_name not in table_info.keys():
         LOGGER.error(f"{table_name} is not a valid table!")
         return False
 
     invalid_columns = []
     # Check for invalid column names
     if query_id:
-        invalid_columns = [col for col in query_id if col not in allowed_columns.get(table_name, [])]
+        invalid_columns = [col for col in query_id if col not in table_info.get(table_name, [])]
 
     # Current column names are invalid
     if invalid_columns:
