@@ -99,25 +99,12 @@ def clear_tables():
         with sqlite3.connect(DATABASE) as conn:
             c = conn.cursor()
 
-            # Customer Elements
-            LOGGER.info("Deleting Data From Customer Table...")
-            c.execute("DELETE FROM Customer")
-        
-            # Customer contact information
-            LOGGER.info("Deleting Data From ContactInfo Table...")
-            c.execute("DELETE FROM ContactInfo")
+            # Get all table names
+            tables = [table for table in get_tables().keys()]
 
-            # Owner information
-            LOGGER.info("Deleting Data From Owner Table...")
-            c.execute("DELETE FROM Owner")
-
-            # Restaurant information
-            LOGGER.info("Deleting Data From Restaurant Table...")
-            c.execute("DELETE FROM Restaurant")
-
-            # Reservation information
-            LOGGER.info("Deleting Data From Reservation Table...")
-            c.execute("DELETE FROM Reservation")
+            for table in tables:
+                LOGGER.info(f"Deleting Data From {table} Table...")
+                c.execute(f"DELETE FROM {table}")
 
             conn.commit()
 
