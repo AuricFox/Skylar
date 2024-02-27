@@ -16,7 +16,7 @@ def before_first_request_func():
     '''
     Initialize the database for each new session
     '''
-    database.init_database()
+    database.init_database(new_db=False)
 
 # ====================================================================
 # Main Pages
