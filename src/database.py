@@ -139,39 +139,89 @@ def print_tables():
     '''
 
     with sqlite3.connect(DATABASE) as conn:
+        c = conn.cursor()
+
+        # Print Customer table data
+        print("Customer Table Data:")
+        c.execute("SELECT * FROM Customer")
+        customers = c.fetchall()
+        print(tabulate(customers, headers=["cid", "cname", "address", "city", "state"], tablefmt="grid"))
+
+        # Print ContactInfo table data
+        print("ContactInfo Table Data:")
+        c.execute("SELECT * FROM ContactInfo")
+        contacts = c.fetchall()
+        print(tabulate(contacts, headers=["cid", "type", "value"], tablefmt="grid"))
+
+        # Print Owner table data
+        print("Owner Table Data:")
+        c.execute("SELECT * FROM Owner")
+        owners = c.fetchall()
+        print(tabulate(owners, headers=["Oid", "oname"], tablefmt="grid"))
+
+        # Print Restaurant table data
+        print("Restaurant Table Data:")
+        c.execute("SELECT * FROM Restaurant")
+        restaurants = c.fetchall()
+        print(tabulate(restaurants, headers=["rid", "rname", "city", "state", "rating", "ownerID"], tablefmt="grid"))
+
+        # Print Reservation table data
+        print("Reservation Table Data:")
+        c.execute("SELECT * FROM Reservation")
+        reservations = c.fetchall()
+        print(tabulate(reservations, headers=["cid", "rid", "date", "num_adults", "num_child"], tablefmt="grid"))
+
+        conn.commit()
+
+# ==============================================================================================================
+def drop_table(table_name:str):
+    '''
+    Drops the selected table from the database
+
+    Parameter(s):
+        table_name (str): name of the table being dropped
+
+    Output(s):
+        True if the table was successfully dropped, else False
+    '''
+    try:
+        with sqlite3.connect(DATABASE) as conn:
+            LOGGER.info(f"Dropping {table_name} from the database ...")
+
             c = conn.cursor()
-
-            # Print Customer table data
-            print("Customer Table Data:")
-            c.execute("SELECT * FROM Customer")
-            customers = c.fetchall()
-            print(tabulate(customers, headers=["cid", "cname", "address", "city", "state"], tablefmt="grid"))
-
-            # Print ContactInfo table data
-            print("ContactInfo Table Data:")
-            c.execute("SELECT * FROM ContactInfo")
-            contacts = c.fetchall()
-            print(tabulate(contacts, headers=["cid", "type", "value"], tablefmt="grid"))
-
-            # Print Owner table data
-            print("Owner Table Data:")
-            c.execute("SELECT * FROM Owner")
-            owners = c.fetchall()
-            print(tabulate(owners, headers=["Oid", "oname"], tablefmt="grid"))
-
-            # Print Restaurant table data
-            print("Restaurant Table Data:")
-            c.execute("SELECT * FROM Restaurant")
-            restaurants = c.fetchall()
-            print(tabulate(restaurants, headers=["rid", "rname", "city", "state", "rating", "ownerID"], tablefmt="grid"))
-
-            # Print Reservation table data
-            print("Reservation Table Data:")
-            c.execute("SELECT * FROM Reservation")
-            reservations = c.fetchall()
-            print(tabulate(reservations, headers=["cid", "rid", "date", "num_adults", "num_child"], tablefmt="grid"))
-
+            c.execute(f"DROP TABLE IF EXISTS {table_name}")
             conn.commit()
+
+        return True
+
+    except Exception as e:
+        LOGGER.error(f"An error occured when dropping {table_name} from the database: {e}")
+        return False
+    
+# ==============================================================================================================
+def drop_all_tables():
+    '''
+    Drops all the tables from the database
+
+    Parameter(s): None
+
+    Output(s):
+        True if the table was successfully dropped, else False
+    '''
+    try:
+        # Get all table names
+        tables = [table for table in get_tables().keys()]
+        # Drop all tables
+        deleted = [drop_table(table) for table in tables]
+
+        if False in deleted:
+            raise Exception("Failed to delete table!")
+
+        return True
+
+    except Exception as e:
+        LOGGER.error(f"An error occured when dropping tables from the database: {e}")
+        return False
 
 # ==============================================================================================================
 # DATABASE INSERTION FUNCTIONS
