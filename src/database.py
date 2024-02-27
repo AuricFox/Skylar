@@ -1,3 +1,6 @@
+'''
+Used for database CRUD operations and managing the database
+'''
 import sqlite3, sys, os, utils, setup
 from tabulate import tabulate
 
@@ -135,7 +138,7 @@ def print_tables():
             print(f"{table} Table Data:")
             c.execute(f"SELECT * FROM {table}")
             data = c.fetchall()
-            print(tabulate(data, headers=values, tablefmt="grid"))
+            print(tabulate(data, headers=values['column_id'], tablefmt="grid"))
 
         conn.commit()
 
@@ -357,7 +360,7 @@ def verify_query(table_name:str, query_id:tuple=None):
     invalid_columns = []
     # Check for invalid column names
     if query_id:
-        invalid_columns = [col for col in query_id if col not in table_info.get(table_name, [])]
+        invalid_columns = [col for col in query_id if col not in table_info.get(table_name, {}).get('column_id', [])]
 
     # Current column names are invalid
     if invalid_columns:
@@ -508,23 +511,36 @@ def get_tables():
     Parameter(s): None
     
     Output(s):
-        response (dict): a dictionary containing the table names as keys and a list of the column names as values
+        response (dict): a dictionary containing the table names as keys, a list of the column names, and the string 
+            used to create the table
+
+            response = {
+                table_name: {
+                    'column_id': [column_names],
+                    'create_str': reate_table_str
+                },
+                ...
+            }
     ''' 
     response = {}
     try:
         with sqlite3.connect(DATABASE) as conn:
             c = conn.cursor()
 
-            # Get all the table names in the database
+            # Get all the table names in the database and create table string
             LOGGER.info(f"Retrieving table info from the database ...")
             c.execute('SELECT * FROM sqlite_master WHERE type="table" AND name NOT LIKE "sqlite_%"')
-            tables = [table[1] for table in c.fetchall()]
+            tables = [(table[1], table[4]) for table in c.fetchall()]
 
             # Get the column names of the tables
             for table in tables:
-                c.execute(f"PRAGMA table_info({table})")
+                c.execute(f"PRAGMA table_info({table[0]})")
                 columns_info = c.fetchall()
-                response[table] = [info[1] for info in columns_info]
+
+                response[table[0]] = {
+                    'column_id': [info[1] for info in columns_info],
+                    'create_str': table[1]
+                }
 
         return response
     
