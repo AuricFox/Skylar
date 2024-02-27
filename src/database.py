@@ -1,4 +1,4 @@
-import sqlite3, sys, os, utils
+import sqlite3, sys, os, utils, setup
 from tabulate import tabulate
 
 LOGGER = utils.LOGGER
@@ -539,6 +539,32 @@ def get_tables():
     except sqlite3.Error as e:
         LOGGER.error(f"An error occurred when retrieving tables info from the database: {e}")
         return response
+    
+# ==============================================================================================================
+def init_database(new_db:bool=False, file:str=None):
+    '''
+    Initializes the database with new or refreshed tables
+    
+    Parameter(s):
+        new_db (bool, default=False): initialized the database with new data if true, else inits it with the data from a JSON file
+        file (str, default=None): name of the JSON file used to migrate the data to the database
+
+    Ouput(s):
+        True if the database is successfully initialized, else False
+    '''
+    try:
+        # Init database with new data
+        if new_db: setup.Init_db()
+        # Init database with data from input json
+        elif not new_db and file: setup.from_json(file=file)
+        # Init database with old json file
+        else: setup.from_json()
+
+        return True
+    
+    except Exception as e:
+        LOGGER.error(f"An error occurred when initializing the database: {e}")
+        return False
 
 # ==============================================================================================================
 if __name__ == "__main__":
