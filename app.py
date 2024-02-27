@@ -1,6 +1,5 @@
-from flask import Flask, request, render_template, url_for, flash
+from flask import Flask, request, render_template
 
-import os
 import sys
 
 sys.path.append('./src/')
@@ -12,11 +11,27 @@ app = Flask(__name__, static_folder='static')
 app.secret_key = 'my_super_secret_totaly_unbreakable_key'
 
 # ====================================================================
+@app.before_first_request
+def before_first_request_func():
+    '''
+    Initialize the database for each new session
+    '''
+    database.init_database()
+
+# ====================================================================
 # Main Pages
 # ====================================================================
 @app.route("/")
 @app.route("/home", methods=["POST", "GET"])
 def home():
+    '''
+    Processes home page
+
+    Parameter(s): None
+
+    Output(s):
+        A rendered HTML page with load db schema and data table if a POST is made
+    '''
     data = {}
 
     if request.method == 'POST':
