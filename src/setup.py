@@ -1,7 +1,7 @@
 '''
-NOTE: This is a single use program used to generate a json file used for populating the database tables
+Used to populate an empty database with randomized data or migrate data to/from a JSON file
 '''
-import sys, random, sqlite3, json, utils, database
+import sys, random, json, utils, database
 from datetime import datetime
 
 LOGGER = utils.LOGGER
@@ -396,41 +396,13 @@ def from_json(file:str='data.json'):
 
     JSON Format:
         {
-            "Customer": [{
-                "cid": int, 
-                "cname": name, 
-                "address": street_address, 
-                "city": city, 
-                "state": state_abbreviation
-            }, ... ],
-            
-            "ContactInfo": [{
-                "cid": int, 
-                "type": email/home/cell, 
-                "value": contact
-            }, ... ],
-            
-            "Owner": [{
-                "Oid": int, 
-                "oname": name
-            }, ... ],
-            
-            "Restaurant": [{
-                "rid": int, 
-                "rname": restaurant_name, 
-                "city": city, 
-                "state": state_abbreviation, 
-                "rating": int, 
-                "ownerID": int
-            }, ... ],
-
-            "Reservation": [{
-                "cid": int, 
-                "rid": int, 
-                "date": YYYY-MM-DD HH:MM, 
-                "num_adults": int, 
-                "num_child": int
-            }, ... ]
+            table_name: [
+                {column_name: value, column_name: value, ... }, 
+                {column_name: value, column_name: value, ... }, ... ], 
+            table_name: [
+                {column_name: value, column_name: value, ... }, 
+                {column_name: value, column_name: value, ... }, ... ],
+            ....
         }
     
     Output(s):
@@ -441,6 +413,9 @@ def from_json(file:str='data.json'):
 
         if not utils.verify_file(file=file):
             raise Exception("Invalid filename or type!")
+        
+        # Drop all tables currently in the database
+        database.drop_all_tables()
         
         # Read data from the JSON file
         with open(file, "r") as f:
@@ -487,8 +462,8 @@ class Init_db:
             num_reservations:int = 30
     ):
         '''
-        Initializes the Creation class by getting the randomly generated customer and owner data. The data is then added
-        to the database afterwhich the reservation data is created and then added to the database
+        Populates the database by getting the randomly generated customer, contact, owner, and restaurant data. 
+        The data is then added to the database afterwhich the reservation data is created and then added to the database
         
         Parameter(s):
             num_customers (int, default=100): number of customers
@@ -501,8 +476,17 @@ class Init_db:
         
         Output(s): None
         '''
+
+        # Get all table names
+        tables = [table for table in database.get_tables().keys()]
+        allowed_tables = ['Customer', 'ContactInfo', 'Restaurant', 'Reservation', 'Owner']
+
+        # Drop not default tables
+        for table in tables:
+            if table not in allowed_tables:
+                database.drop_table(table_name=table)
         
-        # Clear all database tables
+        # Clear all remaining default tables
         database.clear_tables()
 
         self.customers = gen_customers(num=num_customers, minc=min_contacts, maxc=max_contacts)
