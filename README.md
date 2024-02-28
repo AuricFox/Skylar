@@ -1,6 +1,6 @@
 # Skylar
 
-Skylar is web-base application for programming practice designed to help withcoding assessments and interviews. Skylar focuses on SQL queries and databases.
+Skylar is web-base application for programming practice designed to help with coding assessments and interviews. Skylar focuses on SQL queries and databases. The program starts with a preloaded database with randomly generated data but can be added to by the user.
 
 ## Getting Started
 
