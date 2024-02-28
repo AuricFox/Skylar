@@ -360,31 +360,53 @@ def to_json(file:str='data.json'):
     Migrates the data in the database to a JSON file
 
     Parameter(s):
-        file (str, default=data.json): a file where the migrated data is saved
+        file (str, default='data.json'): a file where the migrated data is saved
 
     Output(s):
-        A jSON file containing the migrated data
+        True if the data was successfully migrated to a JSON files and saves in the same directory
+
+    JSON Format:
+    {
+        table_name: {
+            'data': [
+                {column_name: value, column_name: value, ... }, 
+                {column_name: value, column_name: value, ... }, ... ], 
+            'create': SQL_Create_Query
+        },
+        table_name: {
+            'data': [
+                {column_name: value, column_name: value, ... }, 
+                {column_name: value, column_name: value, ... }, ... ], 
+            'create': SQL_Create_Query
+        },
+        ....
+    }
     '''
     try:
         LOGGER.info("Migrating data to JSON file ....")
 
         if not utils.verify_file(file=file):
             raise Exception("Invalid filename or type!")
+        
+        table_info = database.get_tables()
+        data = {}
 
-        data = {
-            'Customer': database.select_query(table_name='Customer'),
-            'ContactInfo': database.select_query(table_name='ContactInfo'),
-            'Owner': database.select_query(table_name='Owner'),
-            'Restaurant': database.select_query(table_name='Restaurant'),
-            'Reservation': database.select_query(table_name='Reservation')
-        }
+        # Package all the table info
+        for table_name, value in table_info.items():
+            data[table_name] = {
+                'data': database.select_query(table_name=table_name),
+                'create': value['create']
+            }
 
         # Write data to the JSON file
         with open(file, 'w') as f:
             json.dump(data, f)
 
+        return True
+
     except Exception as e:
         LOGGER.error(f"An error occured when migrating data to a json file: {e}")
+        return False
 
 # ==============================================================================================================
 def from_json(file:str='data.json'):
@@ -392,18 +414,24 @@ def from_json(file:str='data.json'):
     Migrates data from a JSON file to the database
     
     Parameter(s):
-        file (str, default=data.json): a json file where the data is being migrated from
+        file (str, default='data.json'): a json file where the data is being migrated from
 
     JSON Format:
-        {
-            table_name: [
+    {
+        table_name: {
+            'data': [
                 {column_name: value, column_name: value, ... }, 
                 {column_name: value, column_name: value, ... }, ... ], 
-            table_name: [
+            'create': SQL_Create_Query
+        },
+        table_name: {
+            'data': [
                 {column_name: value, column_name: value, ... }, 
-                {column_name: value, column_name: value, ... }, ... ],
-            ....
-        }
+                {column_name: value, column_name: value, ... }, ... ], 
+            'create': SQL_Create_Query
+        },
+        ....
+    }
     
     Output(s):
         True if the data is successfully migrated to the database, else False
@@ -415,16 +443,22 @@ def from_json(file:str='data.json'):
             raise Exception("Invalid filename or type!")
         
         # Drop all tables currently in the database
-        database.drop_all_tables()
+        if not database.drop_all_tables():
+            raise Exception("Failed to drop all tables!")
         
         # Read data from the JSON file
         with open(file, "r") as f:
             data = json.load(f)
 
+        # Get all create queries in data
+        create_queries = [query['create'] for query in data.values()]
+        if not database.create_query(queries=create_queries):
+            raise Exception("Failed to create tables!")
+
         # Iterating over the json data
         for table_name,values in data.items():
             # Iterating over the table elements
-            for row in values:
+            for row in values.get('data', []):
                 query_id = tuple(row.keys())
                 query_set = tuple(row.values())
 
@@ -476,18 +510,10 @@ class Init_db:
         
         Output(s): None
         '''
-
-        # Get all table names
-        tables = [table for table in database.get_tables().keys()]
-        allowed_tables = ['Customer', 'ContactInfo', 'Restaurant', 'Reservation', 'Owner']
-
-        # Drop not default tables
-        for table in tables:
-            if table not in allowed_tables:
-                database.drop_table(table_name=table)
-        
-        # Clear all remaining default tables
-        database.clear_tables()
+        # Clear the database
+        database.drop_all_tables()
+        # Reinitialize default tables
+        database.create_tables()
 
         self.customers = gen_customers(num=num_customers, minc=min_contacts, maxc=max_contacts)
         self.owners = gen_owners(num=num_owers, min_res=min_restaurants, max_res=max_restaurants)
