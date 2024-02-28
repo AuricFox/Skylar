@@ -661,5 +661,7 @@ if __name__ == '__main__':
     elif(len(sys.argv) == 2 and sys.argv[1] == "-f"): from_json(file='data.json')   # Migrate data from json file
     elif(len(sys.argv) == 3 and sys.argv[1] == "-f"): from_json(file=sys.argv[2])   # Migrate data from a user defined json file
     elif(len(sys.argv) == 2 and sys.argv[1] == "-c"): database.clear_tables()       # Clear database tables
+    elif(len(sys.argv) == 2 and sys.argv[1] == "-d"): database.drop_all_tables()
     elif(len(sys.argv) == 2 and sys.argv[1] == "-p"): database.print_tables()       # Print table data to screen
+    elif(len(sys.argv) == 2 and sys.argv[1] == "-i"): print(database.get_tables())
     else: print("Invalid Arguments!")

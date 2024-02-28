@@ -8,6 +8,7 @@ from typing import List
 LOGGER = utils.LOGGER
 PATH = os.path.dirname(os.path.abspath(__file__))
 DATABASE = os.path.join(PATH, 'Skylar.db')
+CACHE = utils.Cache()
 
 # ==============================================================================================================
 # CREATE TABLE FUNCTIONS [CREATE]
@@ -82,7 +83,7 @@ def create_tables():
             )""")
 
             conn.commit()
-        
+
         return True
         
     except Exception as e:
@@ -192,11 +193,11 @@ def get_tables():
     ''' 
     response = {}
     try:
+        LOGGER.info(f"Retrieving table info from the database ...")
         with sqlite3.connect(DATABASE) as conn:
             c = conn.cursor()
 
             # Get all the table names in the database and create table string
-            LOGGER.info(f"Retrieving table info from the database ...")
             c.execute('SELECT * FROM sqlite_master WHERE type="table" AND name NOT LIKE "sqlite_%"')
             tables = [(table[1], table[4]) for table in c.fetchall()]
 
@@ -209,7 +210,10 @@ def get_tables():
                     'column_id': [info[1] for info in columns_info],
                     'create': table[1]
                 }
-
+        
+        # Update cache with new table info
+        CACHE.update(response)
+        LOGGER.info(f"Successfully Retrieved table info from the database!")
         return response
     
     except sqlite3.Error as e:
@@ -439,18 +443,20 @@ def clear_tables():
     '''
 
     try:
+        LOGGER.info(f"Deleting table data...")
         with sqlite3.connect(DATABASE) as conn:
+            
             c = conn.cursor()
-
             # Get all table names
             tables = [table for table in get_tables().keys()]
 
             for table in tables:
-                LOGGER.info(f"Deleting Data From {table} Table...")
+                LOGGER.info(f"Clearing {table} Table...")
                 c.execute(f"DELETE FROM {table}")
 
             conn.commit()
 
+        LOGGER.info(f"Successfully deleted table data!")
         return True
     
     except sqlite3.Error as e:
@@ -469,13 +475,16 @@ def drop_table(table_name:str):
         True if the table was successfully dropped, else False
     '''
     try:
+        LOGGER.info(f"Dropping {table_name} from the database ...")
         with sqlite3.connect(DATABASE) as conn:
-            LOGGER.info(f"Dropping {table_name} from the database ...")
 
             c = conn.cursor()
             c.execute(f"DROP TABLE IF EXISTS {table_name}")
             conn.commit()
 
+        # Drop the table from the cache
+        CACHE.drop(key=table_name)
+        LOGGER.info(f"Successfully dropped {table_name} from the database!")
         return True
 
     except Exception as e:
@@ -501,6 +510,8 @@ def drop_all_tables():
         if False in deleted:
             raise Exception("Failed to delete table!")
 
+        # Drop all the tables from the cache
+        CACHE.clear()
         return True
 
     except Exception as e:
@@ -522,7 +533,7 @@ def verify_query(table_name:str, query_id:tuple=None):
         Returns True if the inputs are valid, esle False
     '''
     # Whitelist of allowed column names for each table
-    table_info = get_tables()
+    table_info = CACHE.cache if CACHE.cache else get_tables()
 
     # Current table is not valid
     if table_name not in table_info.keys():
@@ -563,10 +574,9 @@ def db_query(query:str):
     response = {}
 
     try:
+        LOGGER.info(f"Executing Query:\n{query}")
         with sqlite3.connect(DATABASE) as conn:
             c = conn.cursor()
-
-            LOGGER.info(f"Executing Query:\n{query}")
             c.execute(query)
 
             # Get selected data if there is any
@@ -630,18 +640,16 @@ if __name__ == "__main__":
     # python .\phylogeny.py input_file
     if(len(sys.argv) != 2):
         print(f"Only two inputs allowed, {len(sys.argv)} were entered!")
-    # Create Tables
-    elif(sys.argv[1] == "-c"): create_tables()
-    # Delete Tables
-    elif(sys.argv[1] == "-d"): clear_tables()
-    # Print Tables
-    elif(sys.argv[1] == "-p"): print_tables()
-    # Print table info
-    elif(sys.argv[1] == "-i"): print(get_tables())
-
+   
+    elif(sys.argv[1] == "-g"): create_tables()      # Create Tables
+    elif(sys.argv[1] == "-c"): clear_tables()       # Delete Tables
+    elif(sys.argv[1] == "-d"): drop_all_tables()
+    elif(sys.argv[1] == "-p"): print_tables()       # Print Tables
+    elif(sys.argv[1] == "-i"): print(get_tables())  # Print table info
     else:
         print(f"Invalid Arguments!\n"
-              f"Create Tables: -c\n"
-              f"Delete Tables: -d\n"
+              f"Create Tables: -g\n"
+              f"Clear Tables: -c\n"
+              f"Drop Tables: -d\n"
               f"Print Tables: -p\n"
               f"Print Table Info: -i\n")
