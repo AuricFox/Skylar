@@ -10,7 +10,7 @@ PATH = os.path.dirname(os.path.abspath(__file__))
 DATABASE = os.path.join(PATH, 'Skylar.db')
 
 # ==============================================================================================================
-# ADMIN TABLE FUNCTIONS
+# CREATE TABLE FUNCTIONS [CREATE]
 # ==============================================================================================================
 def create_tables():
     '''
@@ -119,35 +119,103 @@ def create_query(queries:List[str]):
         return False
 
 # ==============================================================================================================
-def clear_tables():
+# SELECT TABLE FUNCTIONS [READ]
+# ==============================================================================================================
+def select_query(table_name:str, query_id:tuple=None):
     '''
-    Clears all the data from the tables.
+    Retrieves the relavent data from the database
+    
+    Parameter(s):
+        table_name (str): table where data is being accessed
+        query_id (tuple, default=None): column names where the data is being selected from if provided, else
+            select all the table attributes
+        
+    Output(s):
+        response (list): a list of the queried data formatted into a dictionary
+            response = [{col1: value1, col2: value1, ...}, {col1: value2, col2: value2, ...}, ...]
+    '''
+    response = []
 
+    try:
+        # Check if the inputs are valid
+        if not verify_query(table_name=table_name, query_id=query_id):
+            raise ValueError("Invalid table or column name used!")
+        
+        # Format quiered columns
+        if query_id: columns = ', '.join(query_id)
+        else: columns = '*'
+        
+        # Build Input query string
+        query = f"SELECT {columns} FROM {table_name}"
+
+        with sqlite3.connect(DATABASE) as conn:      
+            c = conn.cursor()
+
+            # Get the column names of all fields
+            if not query_id:
+                c.execute(f"PRAGMA table_info({table_name})")
+                columns_info = c.fetchall()
+                query_id = [info[1] for info in columns_info]
+
+            # Get the queried data
+            c.execute(query)
+            data = c.fetchall()
+
+            # Convert the queried data from tuples to dictionaries
+            for d in data:
+                keys = query_id
+                response.append({key: value for key, value in zip(keys, d)})
+        
+    except Exception as e:
+        LOGGER.error(f"An error occured when selecting data from {table_name}: {e}")
+    
+    return response
+
+# ==============================================================================================================
+def get_tables():
+    '''
+    Retrieves all the tables and their column names in the Skylar database
+    
     Parameter(s): None
+    
+    Output(s):
+        response (dict): a dictionary containing the table names as keys, a list of the column names, and the string 
+            used to create the table
 
-    Output(s): 
-        Bool: returns true if the tables are wiped, else returns false
-    '''
-
+            response = {
+                table_name: {
+                    'column_id': [column_names],
+                    'create_str': reate_table_str
+                },
+                ...
+            }
+    ''' 
+    response = {}
     try:
         with sqlite3.connect(DATABASE) as conn:
             c = conn.cursor()
 
-            # Get all table names
-            tables = [table for table in get_tables().keys()]
+            # Get all the table names in the database and create table string
+            LOGGER.info(f"Retrieving table info from the database ...")
+            c.execute('SELECT * FROM sqlite_master WHERE type="table" AND name NOT LIKE "sqlite_%"')
+            tables = [(table[1], table[4]) for table in c.fetchall()]
 
+            # Get the column names of the tables
             for table in tables:
-                LOGGER.info(f"Deleting Data From {table} Table...")
-                c.execute(f"DELETE FROM {table}")
+                c.execute(f"PRAGMA table_info({table[0]})")
+                columns_info = c.fetchall()
 
-            conn.commit()
+                response[table[0]] = {
+                    'column_id': [info[1] for info in columns_info],
+                    'create': table[1]
+                }
 
-        return True
+        return response
     
     except sqlite3.Error as e:
-        LOGGER.error(f"An error occurred when deleting all records from the tables: {e}")
-        return False
-
+        LOGGER.error(f"An error occurred when retrieving tables info from the database: {e}")
+        return response
+    
 # ==============================================================================================================
 def print_tables():
     '''
@@ -158,73 +226,24 @@ def print_tables():
     Output(s):
         Prints tables to command terminal
     '''
-
-    with sqlite3.connect(DATABASE) as conn:
-        c = conn.cursor()
-
-        # Get all table names
-        table_info = get_tables()
-
-        for table, values in table_info.items():
-            print(f"{table} Table Data:")
-            c.execute(f"SELECT * FROM {table}")
-            data = c.fetchall()
-            print(tabulate(data, headers=values['column_id'], tablefmt="grid"))
-
-        conn.commit()
-
-# ==============================================================================================================
-def drop_table(table_name:str):
-    '''
-    Drops the selected table from the database
-
-    Parameter(s):
-        table_name (str): name of the table being dropped
-
-    Output(s):
-        True if the table was successfully dropped, else False
-    '''
     try:
         with sqlite3.connect(DATABASE) as conn:
-            LOGGER.info(f"Dropping {table_name} from the database ...")
-
             c = conn.cursor()
-            c.execute(f"DROP TABLE IF EXISTS {table_name}")
-            conn.commit()
 
-        return True
+            # Get all table names
+            table_info = get_tables()
 
-    except Exception as e:
-        LOGGER.error(f"An error occured when dropping {table_name} from the database: {e}")
-        return False
-    
-# ==============================================================================================================
-def drop_all_tables():
-    '''
-    Drops all the tables from the database
-
-    Parameter(s): None
-
-    Output(s):
-        True if the table was successfully dropped, else False
-    '''
-    try:
-        # Get all table names
-        tables = [table for table in get_tables().keys()]
-        # Drop all tables
-        deleted = [drop_table(table) for table in tables]
-
-        if False in deleted:
-            raise Exception("Failed to delete table!")
-
-        return True
+            for table, values in table_info.items():
+                print(f"{table} Table Data:")
+                c.execute(f"SELECT * FROM {table}")
+                data = c.fetchall()
+                print(tabulate(data, headers=values['column_id'], tablefmt="grid"))
 
     except Exception as e:
-        LOGGER.error(f"An error occured when dropping tables from the database: {e}")
-        return False
+        LOGGER.error(f"An error occurred when printing tables: {e}")
 
 # ==============================================================================================================
-# DATABASE INSERTION FUNCTIONS
+# DATABASE INSERTION FUNCTIONS [UPDATE]
 # ==============================================================================================================
 def insert_customer(cname:str, address:str, city:str, state:str):
     '''
@@ -365,41 +384,7 @@ def insert_reservation(cid:int, rid:int, date:str, num_adults:int, num_child:int
     except Exception as e:
         LOGGER.error(f"An error occured when inserting into Reservation table: {e}")
         return False
-
-# ==============================================================================================================
-# ABSTRACT DATABASE FUNCTIONS
-# ==============================================================================================================
-def verify_query(table_name:str, query_id:tuple=None):
-    '''
-    Verifies the user defined inputs to mitigate sql injection
-
-    Parameter(s):
-        table_name (str): table where data is being added
-        query_id (tuple, default=None): column names where the data is being queried
-        
-    Output(s):
-        Returns True if the inputs are valid, esle False
-    '''
-    # Whitelist of allowed column names for each table
-    table_info = get_tables()
-
-    # Current table is not valid
-    if table_name not in table_info.keys():
-        LOGGER.error(f"{table_name} is not a valid table!")
-        return False
-
-    invalid_columns = []
-    # Check for invalid column names
-    if query_id:
-        invalid_columns = [col for col in query_id if col not in table_info.get(table_name, {}).get('column_id', [])]
-
-    # Current column names are invalid
-    if invalid_columns:
-        LOGGER.error((f"Invalid column name(s): {', '.join(invalid_columns)}"))
-        return False
     
-    return True
-
 # ==============================================================================================================
 def insert_query(table_name:str, query_id:tuple, query_set:tuple):
     '''
@@ -441,55 +426,120 @@ def insert_query(table_name:str, query_id:tuple, query_set:tuple):
         return False
 
 # ==============================================================================================================
-def select_query(table_name:str, query_id:tuple=None):
+# DATABASE DELETION FUNCTIONS [DELETE]
+# ==============================================================================================================
+def clear_tables():
     '''
-    Retrieves the relavent data from the database
-    
-    Parameter(s):
-        table_name (str): table where data is being accessed
-        query_id (tuple, default=None): column names where the data is being selected from if provided, else
-            select all the table attributes
-        
-    Output(s):
-        response (list): a list of the queried data formatted into a dictionary
-            response = [{col1: value1, col2: value1, ...}, {col1: value2, col2: value2, ...}, ...]
+    Clears all the data from the tables.
+
+    Parameter(s): None
+
+    Output(s): 
+        Bool: returns true if the tables are wiped, else returns false
     '''
-    response = []
 
     try:
-        # Check if the inputs are valid
-        if not verify_query(table_name=table_name, query_id=query_id):
-            raise ValueError("Invalid table or column name used!")
-        
-        # Format quiered columns
-        if query_id: columns = ', '.join(query_id)
-        else: columns = '*'
-        
-        # Build Input query string
-        query = f"SELECT {columns} FROM {table_name}"
-
-        with sqlite3.connect(DATABASE) as conn:      
+        with sqlite3.connect(DATABASE) as conn:
             c = conn.cursor()
 
-            # Get the column names of all fields
-            if not query_id:
-                c.execute(f"PRAGMA table_info({table_name})")
-                columns_info = c.fetchall()
-                query_id = [info[1] for info in columns_info]
+            # Get all table names
+            tables = [table for table in get_tables().keys()]
 
-            # Get the queried data
-            c.execute(query)
-            data = c.fetchall()
+            for table in tables:
+                LOGGER.info(f"Deleting Data From {table} Table...")
+                c.execute(f"DELETE FROM {table}")
 
-            # Convert the queried data from tuples to dictionaries
-            for d in data:
-                keys = query_id
-                response.append({key: value for key, value in zip(keys, d)})
-        
-    except Exception as e:
-        LOGGER.error(f"An error occured when selecting data from {table_name}: {e}")
+            conn.commit()
+
+        return True
     
-    return response
+    except sqlite3.Error as e:
+        LOGGER.error(f"An error occurred when deleting all records from the tables: {e}")
+        return False
+
+# ==============================================================================================================
+def drop_table(table_name:str):
+    '''
+    Drops the selected table from the database
+
+    Parameter(s):
+        table_name (str): name of the table being dropped
+
+    Output(s):
+        True if the table was successfully dropped, else False
+    '''
+    try:
+        with sqlite3.connect(DATABASE) as conn:
+            LOGGER.info(f"Dropping {table_name} from the database ...")
+
+            c = conn.cursor()
+            c.execute(f"DROP TABLE IF EXISTS {table_name}")
+            conn.commit()
+
+        return True
+
+    except Exception as e:
+        LOGGER.error(f"An error occured when dropping {table_name} from the database: {e}")
+        return False
+    
+# ==============================================================================================================
+def drop_all_tables():
+    '''
+    Drops all the tables from the database
+
+    Parameter(s): None
+
+    Output(s):
+        True if the table was successfully dropped, else False
+    '''
+    try:
+        # Get all table names
+        tables = [table for table in get_tables().keys()]
+        # Drop all tables
+        deleted = [drop_table(table) for table in tables]
+
+        if False in deleted:
+            raise Exception("Failed to delete table!")
+
+        return True
+
+    except Exception as e:
+        LOGGER.error(f"An error occured when dropping tables from the database: {e}")
+        return False
+
+# ==============================================================================================================
+# OTHER DATABASE FUNCTIONS
+# ==============================================================================================================
+def verify_query(table_name:str, query_id:tuple=None):
+    '''
+    Verifies the user defined inputs to mitigate sql injection
+
+    Parameter(s):
+        table_name (str): table where data is being added
+        query_id (tuple, default=None): column names where the data is being queried
+        
+    Output(s):
+        Returns True if the inputs are valid, esle False
+    '''
+    # Whitelist of allowed column names for each table
+    table_info = get_tables()
+
+    # Current table is not valid
+    if table_name not in table_info.keys():
+        LOGGER.error(f"{table_name} is not a valid table!")
+        return False
+
+    invalid_columns = []
+    # Check for invalid column names
+    if query_id:
+        invalid_columns = [col for col in query_id if col not in table_info.get(table_name, {}).get('column_id', [])]
+
+    # Current column names are invalid
+    if invalid_columns:
+        LOGGER.error((f"Invalid column name(s): {', '.join(invalid_columns)}"))
+        return False
+    
+    return True
     
 # ==============================================================================================================
 def db_query(query:str):
@@ -532,51 +582,6 @@ def db_query(query:str):
         LOGGER.error(f"An error occurred when executing the query {query}: {e}")
         response['error'] = f"An error occurred when executing the query {query}: {e}"
 
-        return response
-
-# ==============================================================================================================
-def get_tables():
-    '''
-    Retrieves all the tables and their column names in the Skylar database
-    
-    Parameter(s): None
-    
-    Output(s):
-        response (dict): a dictionary containing the table names as keys, a list of the column names, and the string 
-            used to create the table
-
-            response = {
-                table_name: {
-                    'column_id': [column_names],
-                    'create_str': reate_table_str
-                },
-                ...
-            }
-    ''' 
-    response = {}
-    try:
-        with sqlite3.connect(DATABASE) as conn:
-            c = conn.cursor()
-
-            # Get all the table names in the database and create table string
-            LOGGER.info(f"Retrieving table info from the database ...")
-            c.execute('SELECT * FROM sqlite_master WHERE type="table" AND name NOT LIKE "sqlite_%"')
-            tables = [(table[1], table[4]) for table in c.fetchall()]
-
-            # Get the column names of the tables
-            for table in tables:
-                c.execute(f"PRAGMA table_info({table[0]})")
-                columns_info = c.fetchall()
-
-                response[table[0]] = {
-                    'column_id': [info[1] for info in columns_info],
-                    'create': table[1]
-                }
-
-        return response
-    
-    except sqlite3.Error as e:
-        LOGGER.error(f"An error occurred when retrieving tables info from the database: {e}")
         return response
     
 # ==============================================================================================================
