@@ -71,3 +71,34 @@ def verify_file(file:str):
     except Exception as e:
         LOGGER.error(f"An error occured when validating {file}: {e}")
         return False
+    
+# ========================================================================================================================================
+class Cache:
+    '''
+    Creates a cache of data to prevent repetitive calls
+    '''
+    def __init__(self):
+        '''
+        Initializes the cache with an empty dictionary
+        '''
+        self.cache = {}
+
+    # ------------------------------------------------------------
+    def drop(self, key:str):
+        '''
+        Drops a key element from the cahce
+        
+        Parameter(s):
+            key (str): the key element in the dict being dropped
+        '''
+        if key in self.cache:
+            self.cache.pop(key)
+        else:
+            raise KeyError(f"Key '{key}' not found in cache")
+
+    # ------------------------------------------------------------
+    def clear(self):
+        '''
+        Resets the cache to an empty dictionary
+        '''
+        self.cache = {}
