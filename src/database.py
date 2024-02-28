@@ -3,6 +3,7 @@ Used for database CRUD operations and managing the database
 '''
 import sqlite3, sys, os, utils, setup
 from tabulate import tabulate
+from typing import List
 
 LOGGER = utils.LOGGER
 PATH = os.path.dirname(os.path.abspath(__file__))
@@ -86,6 +87,36 @@ def create_tables():
         
     except Exception as e:
         LOGGER.error(f"An error occured when creating tables: {e}")
+
+# ==============================================================================================================
+def create_query(queries:List[str]):
+    '''
+    Creates user defined table(s)
+
+    Parameter(s):
+        queries (List[str]): list of create table queries
+
+    Output(s):
+        True if the queries are successfully executed, else False
+    '''
+    try:
+        with sqlite3.connect(DATABASE) as conn:
+            c = conn.cursor()
+
+            for query in queries:
+
+                # Check if query begins with CREATE
+                if query.strip().upper().startswith('CREATE'):
+                    raise ValueError("Query must begin with CREATE!")
+                
+                LOGGER.info(f'Executing query:\n{query}')
+                c.execute(query)
+
+        return True
+    
+    except Exception as e:
+        LOGGER.error(f"An error occurred when creating the tables from the queries: {e}")
+        return False
 
 # ==============================================================================================================
 def clear_tables():
@@ -466,7 +497,7 @@ def db_query(query:str):
     Executes a user defined CRUD operation in the database
 
     Parameter(s):
-        query (str): user defined 
+        query (str): user defined query
 
     Output(s):
         repsonse (list, default={}): a dictionary containing the relanvent data to the query, an 
@@ -539,7 +570,7 @@ def get_tables():
 
                 response[table[0]] = {
                     'column_id': [info[1] for info in columns_info],
-                    'create_str': table[1]
+                    'create': table[1]
                 }
 
         return response
