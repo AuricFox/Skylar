@@ -106,7 +106,7 @@ def create_query(queries:List[str]):
             for query in queries:
 
                 # Check if query begins with CREATE
-                if query.strip().upper().startswith('CREATE'):
+                if not query.strip().upper().startswith('CREATE'):
                     raise ValueError("Query must begin with CREATE!")
                 
                 LOGGER.info(f'Executing query:\n{query}')
