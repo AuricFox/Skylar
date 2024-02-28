@@ -84,12 +84,27 @@ class Cache:
         self.cache = {}
 
     # ------------------------------------------------------------
+    def update(self, dict1:dict):
+        '''
+        Updates the current cache with new data
+
+        Parameter(s):
+            dict1 (dict): dictionary with new data
+
+        Output(s): None
+        '''
+        self.cache.update(dict1)
+
+    # ------------------------------------------------------------
     def drop(self, key:str):
         '''
         Drops a key element from the cahce
         
         Parameter(s):
             key (str): the key element in the dict being dropped
+
+        Output(s):
+            Raises a keyError if an error occurs, else None
         '''
         if key in self.cache:
             self.cache.pop(key)
