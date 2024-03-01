@@ -222,3 +222,10 @@ button:hover {
     padding: 8px;
     background-color: #555;
 }
+
+.error {
+    text-align: center;
+    font-weight: bolder;
+    padding: 1rem;
+    background-color: red;
+}
