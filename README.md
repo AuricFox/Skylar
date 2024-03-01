@@ -27,9 +27,7 @@ To get started with Skylar, follow these steps:
 
 4. **Install Dependencies:**
     ```
-    (env) pip install flask
-    (env) pip install sqlite3
-    (env) pip install tabulate
+    (env) pip install flask sqlite3 tabulate python-dotenv
     ```
 
 5. **Run Server:**

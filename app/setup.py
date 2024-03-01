@@ -1,8 +1,10 @@
 '''
 Used to populate an empty database with randomized data or migrate data to/from a JSON file
 '''
-import sys, random, json, utils, database
+import sys, random, json
 from datetime import datetime
+from . import utils
+from . import database
 
 LOGGER = utils.LOGGER
 

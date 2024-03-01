@@ -1,13 +1,15 @@
 '''
 Used for database CRUD operations and managing the database
 '''
-import sqlite3, sys, os, utils, setup
+import sqlite3, sys, os
+from . import utils
+from . import setup
 from tabulate import tabulate
 from typing import List
 
 LOGGER = utils.LOGGER
 PATH = os.path.dirname(os.path.abspath(__file__))
-DATABASE = os.path.join(PATH, 'Skylar.db')
+DATABASE = os.path.join(PATH, '../data/Skylar.db')
 CACHE = utils.Cache()
 
 # ==============================================================================================================

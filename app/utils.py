@@ -3,7 +3,7 @@ import logging, os, re, mimetypes
 PATH = os.path.dirname(os.path.abspath(__file__))
 
 logging.basicConfig(
-    filename=os.path.join(PATH, './output/app.log'),
+    filename=os.path.join(PATH, '../logs/app.log'),
     level=logging.INFO,
     format='%(asctime)s [%(levelname)s]: %(message)s'
 )

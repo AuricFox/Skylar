@@ -1,27 +1,16 @@
-from flask import Flask, request, render_template
+from flask import request, render_template
+from . import utils
+from . import database
+from flask import current_app as app
 
-import sys
-
-sys.path.append('./src/')
-import utils, database
 
 LOGGER = utils.LOGGER
-
-app = Flask(__name__, static_folder='static')
-app.secret_key = 'my_super_secret_totaly_unbreakable_key'
-
-# ====================================================================
-@app.before_first_request
-def before_first_request_func():
-    '''
-    Initialize the database for each new session
-    '''
-    database.init_database(new_db=False)
 
 # ====================================================================
 # Main Pages
 # ====================================================================
 @app.route("/")
+@app.route("/index")
 @app.route("/home", methods=["POST", "GET"])
 def home():
     '''
@@ -48,9 +37,3 @@ def home():
 '''@app.errorhandler(404)
 def page_not_found():
     return render_template('404.html'), 404'''
-
-# ====================================================================
-# Run Main
-# ====================================================================
-if __name__ == "__main__":
-    app.run()
