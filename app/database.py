@@ -187,7 +187,7 @@ def get_tables():
 
             response = {
                 table_name: {
-                    'column_id': [column_names],
+                    'column_name': [column_names],
                     'create_str': reate_table_str
                 },
                 ...
@@ -209,7 +209,7 @@ def get_tables():
                 columns_info = c.fetchall()
 
                 response[table[0]] = {
-                    'column_id': [info[1] for info in columns_info],
+                    'column_name': [info[1] for info in columns_info],
                     'create': table[1]
                 }
         
@@ -243,7 +243,7 @@ def print_tables():
                 print(f"{table} Table Data:")
                 c.execute(f"SELECT * FROM {table}")
                 data = c.fetchall()
-                print(tabulate(data, headers=values['column_id'], tablefmt="grid"))
+                print(tabulate(data, headers=values['column_name'], tablefmt="grid"))
 
     except Exception as e:
         LOGGER.error(f"An error occurred when printing tables: {e}")
@@ -545,7 +545,7 @@ def verify_query(table_name:str, query_id:tuple=None):
     invalid_columns = []
     # Check for invalid column names
     if query_id:
-        invalid_columns = [col for col in query_id if col not in table_info.get(table_name, {}).get('column_id', [])]
+        invalid_columns = [col for col in query_id if col not in table_info.get(table_name, {}).get('column_name', [])]
 
     # Current column names are invalid
     if invalid_columns:
@@ -568,7 +568,7 @@ def db_query(query:str):
         (create, update, or delete)
 
         response = {
-            'column_id': [column_name1, column_name2, ... ],
+            'column_name': [column_name1, column_name2, ... ],
             'data': [(value_1, value_2, ...), (value_1, value_2, ...), ... ],
             'error': 'Error Message'
         }
@@ -583,7 +583,7 @@ def db_query(query:str):
 
             # Get selected data if there is any
             if query.strip().upper().startswith('SELECT'):
-                response['column_id'] = [column[0] for column in c.description]     # Column names
+                response['column_name'] = [column[0] for column in c.description]     # Column names
                 response['data'] = c.fetchall()                                     # Queried data
 
             conn.commit()
