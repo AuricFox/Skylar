@@ -35,6 +35,6 @@ def home():
 
 # ====================================================================
 # Custom page not found
-'''@app.errorhandler(404)
+@app.errorhandler(404)
 def page_not_found():
-    return render_template('404.html'), 404'''
+    return render_template('404.html'), 404
