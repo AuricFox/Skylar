@@ -1,4 +1,5 @@
 from flask import Flask
+from . import database
 
 def create_app():
     '''
@@ -13,10 +14,13 @@ def create_app():
     # Configure for development
     app.config.from_object('config.DevConfig')
 
+    # Initialized default database
+    database.init_database()
+
     with app.app_context():
         # Include routes
         from . import routes
         from . import utils
-        from . import database
+        
 
     return app
