@@ -1,12 +1,14 @@
 '''
 Used to populate an empty database with randomized data or migrate data to/from a JSON file
 '''
-import sys, random, json
+import sys, os, random, json
 from datetime import datetime
 from . import utils
 from . import database
 
 LOGGER = utils.LOGGER
+PATH = os.path.dirname(os.path.abspath(__file__))
+DATA_FOLDER = os.path.join(PATH, '../data')
 
 NAMES = [
     ('John', 'Doe'), ('Jane', 'Smith'), ('Michael', 'Johnson'), ('Emily', 'Brown'), ('William', 'Jones'), ('Emma', 'Davis'), 
@@ -400,6 +402,9 @@ def to_json(file:str='data.json'):
                 'create': value['create']
             }
 
+        # Construct path to json file
+        file = os.path.join(DATA_FOLDER, file)
+
         # Write data to the JSON file
         with open(file, 'w') as f:
             json.dump(data, f)
@@ -448,6 +453,9 @@ def from_json(file:str='data.json'):
         if not database.drop_all_tables():
             raise Exception("Failed to drop all tables!")
         
+        # Contruct path to json file
+        file = os.path.join(DATA_FOLDER, file)
+
         # Read data from the JSON file
         with open(file, "r") as f:
             data = json.load(f)

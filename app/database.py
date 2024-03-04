@@ -609,6 +609,8 @@ def init_database(new_db:bool=False, file:str=None):
         True if the database is successfully initialized, else False
     '''
     try:
+        LOGGER.info("Initializing Database ...")
+
         # Init database with new data
         if new_db: setup.Init_db()
         # Init database with data from input json
@@ -616,6 +618,7 @@ def init_database(new_db:bool=False, file:str=None):
         # Init database with old json file
         else: setup.from_json()
 
+        LOGGER.info("Successfully Inialized Database!")
         return True
     
     except Exception as e:
