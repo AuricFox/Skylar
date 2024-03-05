@@ -27,7 +27,7 @@ To get started with Skylar, follow these steps:
 
 4. **Install Dependencies:**
     ```
-    (env) pip install flask sqlite3 tabulate python-dotenv
+    (env) pip install flask tabulate python-dotenv
     ```
 
 5. **Run Server:**
@@ -39,7 +39,7 @@ To get started with Skylar, follow these steps:
 
 ## Database Schema
 
-Below is the schema of the SQLite3 database used for Skylar:
+Below is the default schema of the database used for Skylar:
 
 ### Customer
 
