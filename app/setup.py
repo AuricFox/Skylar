@@ -137,30 +137,30 @@ def gen_email():
     return email
 
 # ==============================================================================================================
-def gen_contacts(minc:int=0, maxc:int=3):
+def gen_contacts(min_contacts:int=0, max_contacts:int=3):
     '''
     Generates the contacts for an individual customer
 
     Parameter(s):
-        minc (int, default=0): minimum number of contacts
-        maxc (int, default=3): maximum number of contacts
+        min_contacts (int, default=0): minimum number of contacts
+        max_contacts (int, default=3): maximum number of contacts
 
     Output(s):
         A dictionary of email or phone numbers used as contacts
     '''
     contacts = []
 
-    if minc < 0 or maxc < 0:
-        LOGGER.warning(f"The number of contacts cannot be negative: min: {minc}, max: {maxc}")
+    if min_contacts < 0 or max_contacts < 0:
+        LOGGER.warning(f"The number of contacts cannot be negative: min: {min_contacts}, max: {max_contacts}")
         return contacts
     
-    if maxc < minc:
-        LOGGER.warning(f"The maximum number of contacts must be greater than the minimum number of contacts: min: {minc}, max: {maxc}")
+    if max_contacts < min_contacts:
+        LOGGER.warning(f"The maximum number of contacts must be greater than the minimum number of contacts: min: {min_contacts}, max: {max_contacts}")
         return contacts
 
     contact_types = ['email', 'home', 'cell']
     # The range of contacts a customer can have
-    num_contacts = random.randint(minc, maxc)
+    num_contacts = random.randint(min_contacts, max_contacts)
 
     # Iterate thru the number of contacts
     for _ in range(num_contacts):
@@ -184,7 +184,7 @@ def gen_contacts(minc:int=0, maxc:int=3):
     return contacts
 
 # ==============================================================================================================
-def gen_customers(num:int=100, minc:int=0, maxc:int=3):
+def gen_customers(num_customers:int=100, min_contacts:int=0, max_contacts:int=3):
     '''
     Generates the customers and their info
 
@@ -198,19 +198,19 @@ def gen_customers(num:int=100, minc:int=0, maxc:int=3):
     '''
     customers = []
 
-    if num < 0:
-        LOGGER.warning(f"Number of customers must be positive: {num}")
+    if num_customers < 0:
+        LOGGER.warning(f"Number of customers must be positive: {num_customers}")
         return customers
     
-    if minc < 0 or maxc < 0:
-        LOGGER.warning(f"The number of contacts cannot be negative: min: {minc}, max: {maxc}")
+    if min_contacts < 0 or max_contacts < 0:
+        LOGGER.warning(f"The number of contacts cannot be negative: min: {min_contacts}, max: {max_contacts}")
         return customers
     
-    if maxc < minc:
-        LOGGER.warning(f"The maximum number of contacts must be greater than the minimum number of contacts: min: {minc}, max: {maxc}")
+    if max_contacts < min_contacts:
+        LOGGER.warning(f"The maximum number of contacts must be greater than the minimum number of contacts: min: {min_contacts}, max: {max_contacts}")
         return customers
 
-    for i in range(num):
+    for i in range(num_customers):
         # Get a name from the list
         name = NAMES[i % len(NAMES)]
 
@@ -218,7 +218,7 @@ def gen_customers(num:int=100, minc:int=0, maxc:int=3):
         address = random.choice(STREET_ADDRESSES)
         city, state = random.choice(CITY_STATE)
 
-        contacts = gen_contacts(minc=minc, maxc=maxc)
+        contacts = gen_contacts(min_contacts=min_contacts, max_contacts=max_contacts)
 
         customers.append({
             'cname': full_name, 
@@ -231,7 +231,7 @@ def gen_customers(num:int=100, minc:int=0, maxc:int=3):
     return customers
 
 # ==============================================================================================================
-def gen_owners(num:int=25, min_res:int=0, max_res:int=5):
+def gen_owners(num_owners:int=25, min_restaurants:int=0, max_restaurants:int=5):
     '''
     Generates a list of owners and the restaurants they own
     
@@ -245,23 +245,23 @@ def gen_owners(num:int=25, min_res:int=0, max_res:int=5):
     '''
     owners = []
 
-    if num < 0:
-        LOGGER.error(f"The number of owners must be positive: {num}")
+    if num_owners < 0:
+        LOGGER.error(f"The number of owners must be positive: {num_owners}")
 
-    if min_res < 0 or max_res < 0:
-        LOGGER.error(f"Number of restaurants must be positive: min: {min_res}, max: {max_res}")
+    if min_restaurants < 0 or max_restaurants < 0:
+        LOGGER.error(f"Number of restaurants must be positive: min: {min_restaurants}, max: {max_restaurants}")
         return owners
 
-    if max_res < min_res:
-        LOGGER.error(f"The maximum number of restaurants must be greater then the minimum number of restaurants: min: {min_res}, max: {max_res}")
+    if max_restaurants < min_restaurants:
+        LOGGER.error(f"The maximum number of restaurants must be greater then the minimum number of restaurants: min: {min_restaurants}, max: {max_restaurants}")
         return owners
 
-    for _ in range(num):
+    for _ in range(num_owners):
         full_name = ' '.join(random.choice(NAMES))
         restaurants = []
 
         # Build a list of the owner's restaurants
-        for _ in range(random.randint(min_res, max_res)):
+        for _ in range(random.randint(min_restaurants, max_restaurants)):
             restaurant = random.choice(RESTAURANTS)
             city, state = random.choice(CITY_STATE)
             rating = random.randint(0,5)
@@ -281,19 +281,19 @@ def gen_owners(num:int=25, min_res:int=0, max_res:int=5):
     return owners
 
 # ==============================================================================================================
-def gen_date(start:int=2000, end:int=2030):
+def gen_date(start_year:int=2000, end_year:int=2030):
     '''
     Generates a random data (YYYY-MM-DD HH:MM)
     
     Parameter(s):
-        start (int, default=2000): starting year
-        end (int, default=2030): ending year
+        start_year (int, default=2000): starting year
+        end_year (int, default=2030): ending year
 
     Output(s):
         A randomly generated date as a string
     '''
 
-    year = random.randint(start, end)
+    year = random.randint(start_year, end_year)
     month = random.randint(1, 12)
 
     # Month of February
@@ -313,7 +313,7 @@ def gen_date(start:int=2000, end:int=2030):
     return date_time.strftime('%Y-%m-%d %H:%M')
 
 # ==============================================================================================================
-def gen_reservations(num:int=30):
+def gen_reservations(num_reservations:int=30):
     '''
     Generates a list of reservation data
 
@@ -321,15 +321,15 @@ def gen_reservations(num:int=30):
     Otherwise no reservations will be created.
 
     Parameter(s):
-        num (int, default=30): number of reservations
+        num_reservations (int, default=30): number of reservations
 
     Output(s):
         A dictionary list of reservation information
     '''
     reservations = []
 
-    if num < 0:
-        LOGGER.error(f"Number of reservations must be positive: {num}")
+    if num_reservations < 0:
+        LOGGER.error(f"Number of reservations must be positive: {num_reservations}")
         return reservations
 
     try:
@@ -342,7 +342,7 @@ def gen_reservations(num:int=30):
         if customers == [] or restaurants == []: 
             return restaurants
         # Generate random reservations
-        for _ in range(num):
+        for _ in range(num_reservations):
             reservations.append({
                 'cid': random.choice(customers)['cid'],     # Save customer cid
                 'rid': random.choice(restaurants)['rid'],   # Save restaurant rid
@@ -500,54 +500,55 @@ class Init_db:
             num_customers:int = 100,
             min_contacts:int = 0,
             max_contacts:int = 3,
-            num_owers:int = 25,
+            num_owners:int = 25,
             min_restaurants:int = 0,
             max_restaurants:int = 5,
             num_reservations:int = 30
     ):
         '''
-        Populates the database by getting the randomly generated customer, contact, owner, and restaurant data. 
-        The data is then added to the database afterwhich the reservation data is created and then added to the database
+        Clears the database of old data and reinitializes the default tables. Populates the database by adding the 
+        randomly generated customer, contact, owner, and restaurant data. Afterwhich the reservation data is 
+        created and then added to the database
         
         Parameter(s):
-            num_customers (int, default=100): number of customers
-            min_contacts (int, default=0): minimum number of customer contacts
-            max_contacts (int, default=3): maximum number of customer contacts
-            num_owers (int, default=25): number of owners
+            num_customers (int, default=100): number of customers generated
+            min_contacts (int, default=0): minimum number of contacts a customer can have
+            max_contacts (int, default=3): maximum number of contacts a customer can have
+            num_owners (int, default=25): number of owners generated
             min_restaurants (int, default=0): minimum number of restaurants that can be owned
             max_restaurants (int, default=5): maximum number of restaurants that can be owned
-            num_reservations (int, default=30): number of reservations
+            num_reservations (int, default=30): number of reservations generated
         
         Output(s): None
         '''
-        # Clear the database
-        database.drop_all_tables()
-        # Reinitialize default tables
-        database.create_tables()
+        
+        database.drop_all_tables()  # Clear the database
+        database.create_tables()    # Reinitialize default tables
 
-        self.customers = gen_customers(num=num_customers, minc=min_contacts, maxc=max_contacts)
-        self.owners = gen_owners(num=num_owers, min_res=min_restaurants, max_res=max_restaurants)
-
-        self.add_customers()
-        self.add_owners()
+        # Populate the database with randomly generated data
+        self.add_customers(num_customers=num_customers, min_contacts=min_contacts, max_contacts=max_contacts)
+        self.add_owners(num_owners=num_owners, min_restaurants=min_restaurants, max_restaurants=max_restaurants)
         self.add_reservations(num=num_reservations)
     
     # ----------------------------------------------------------------------------------------------------------
-    def add_customers(self):
+    def add_customers(self, num_customers:int, min_contacts:int, max_contacts:int):
         '''
         Populates the Customer and ContactInfo tables in the database
 
         Parameter(s):
-            self.customers must be populated with data
+            num_customers (int): number of customers generated
+            min_contacts (int): minimum number of contacts a customer can have
+            max_contacts (int): maximum number of contacts a customer can have
 
         Output(s):
             True if the customers and contacts are successfully added to the database, else False
         '''
         try:
             LOGGER.info("Adding customers and contact info to database...")
+            customers = gen_customers(num_customers=num_customers, min_contacts=min_contacts, max_contacts=max_contacts)
 
             # Add all the customers to the database
-            for customer in self.customers:
+            for customer in customers:
                 # Add the customer and get their primary key
                 key = database.insert_customer(
                     cname=customer['cname'],
@@ -572,12 +573,14 @@ class Init_db:
             return False
     
     # ----------------------------------------------------------------------------------------------------------
-    def add_owners(self):
+    def add_owners(self, num_owners:int, min_restaurants:int, max_restaurants:int):
         '''
         Populates the Owner and Restaurant tables in the database
 
         Parameter(s):
-            self.owners must be populated with data
+            num_owners (int): number of owners generated
+            min_restaurants (int): minimum number of restaurants that can be owned
+            max_restaurants (int): maximum number of restaurants that can be owned
 
         Output(s):
             True if the owners and restaurants are successfully added to the database, else False
@@ -585,9 +588,10 @@ class Init_db:
 
         try:
             LOGGER.info("Adding Owners and Restaurants to database...")
+            owners = gen_owners(num_owners=num_owners, min_restaurants=min_restaurants, max_restaurants=max_restaurants)
 
             # Add all the owners to the database
-            for owner in self.owners:
+            for owner in owners:
                 # Add the owner and get their primary key
                 key = database.insert_owner(
                     oname=owner['oname']
