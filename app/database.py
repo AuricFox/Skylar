@@ -614,9 +614,9 @@ def init_database(new_db:bool=False, file:str=None):
         # Init database with new data
         if new_db: setup.Init_db()
         # Init database with data from input json
-        elif not new_db and file: setup.from_json(file=file)
+        elif not new_db and file: setup.json_to_db(file=file)
         # Init database with old json file
-        else: setup.from_json()
+        else: setup.json_to_db()
 
         LOGGER.info("Successfully Inialized Database!")
         return True

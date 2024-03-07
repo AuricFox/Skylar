@@ -103,7 +103,7 @@ RESTAURANTS = [
 # ==============================================================================================================
 # GENERATING DATA FOR THE TABLES
 # ==============================================================================================================
-def gen_number():
+def gen_phone_number():
     '''
     Generates a random phone number
 
@@ -175,7 +175,7 @@ def gen_contacts(min_contacts:int=0, max_contacts:int=3):
         
         # Append to the phone number list
         else:
-            p_type, num = gen_number()
+            p_type, num = gen_phone_number()
             contacts.append({
                 'type': p_type, 
                 'value': num
@@ -359,7 +359,7 @@ def gen_reservations(num_reservations:int=30):
 # ==============================================================================================================
 # MIGRATING THE DATA
 # ==============================================================================================================
-def to_json(file:str='data.json'):
+def db_to_json(file:str='data.json'):
     '''
     Migrates the data in the database to a JSON file
 
@@ -416,7 +416,7 @@ def to_json(file:str='data.json'):
         return False
 
 # ==============================================================================================================
-def from_json(file:str='data.json'):
+def json_to_db(file:str='data.json'):
     '''
     Migrates data from a JSON file to the database
     
@@ -670,10 +670,10 @@ if __name__ == '__main__':
     '''
 
     if(len(sys.argv) == 2 and sys.argv[1] == "-g"): db = Init_db()                  # Populate the tables with data
-    elif(len(sys.argv) == 2 and sys.argv[1] == "-t"): to_json(file='data.json')     # Migrate data to json file
-    elif(len(sys.argv) == 3 and sys.argv[1] == "-t"): to_json(file=sys.argv[2])     # Migrate data to a user defined json file
-    elif(len(sys.argv) == 2 and sys.argv[1] == "-f"): from_json(file='data.json')   # Migrate data from json file
-    elif(len(sys.argv) == 3 and sys.argv[1] == "-f"): from_json(file=sys.argv[2])   # Migrate data from a user defined json file
+    elif(len(sys.argv) == 2 and sys.argv[1] == "-t"): db_to_json(file='data.json')  # Migrate data to json file
+    elif(len(sys.argv) == 3 and sys.argv[1] == "-t"): db_to_json(file=sys.argv[2])  # Migrate data to a user defined json file
+    elif(len(sys.argv) == 2 and sys.argv[1] == "-f"): json_to_db(file='data.json')  # Migrate data from json file
+    elif(len(sys.argv) == 3 and sys.argv[1] == "-f"): json_to_db(file=sys.argv[2])  # Migrate data from a user defined json file
     elif(len(sys.argv) == 2 and sys.argv[1] == "-c"): database.clear_tables()       # Clear database tables
     elif(len(sys.argv) == 2 and sys.argv[1] == "-d"): database.drop_all_tables()
     elif(len(sys.argv) == 2 and sys.argv[1] == "-p"): database.print_tables()       # Print table data to screen
