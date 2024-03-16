@@ -5,8 +5,8 @@
 
 {% block content %}
 
-<div  class="section">
-    <div id="schema">
+<div class="section">
+    <div class="topic" id="schema">
         <div class="title">Database Schema</div>
         {% for table, values in data['tables'].items() %}
             <div class="table-name">
@@ -24,9 +24,7 @@
         {% endfor %}
     </div>
 
-    <div id="divider"></div>
-
-    <div id="terminal">
+    <div class="topic" id="terminal">
         <form action="{{ url_for('home') }}" method="post">
             <textarea name="code" id="code" placeholder="{{ data['query'] if data.get('query') else 'Enter SQL query here...' }}"></textarea>
             <button type="submit">Run Code</button>

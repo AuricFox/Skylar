@@ -92,21 +92,15 @@ body {
 /* ========== Section ========== */
 
 .section {
-    display: flex;
-    flex-direction: row;
     margin: 0 2rem 1rem 2rem;
 }
 
-#schema, #terminal {
+.topic {
     background-color: #021027;
     padding: 1rem;
-    width: 50%;
-}
-
-#divider {
-    width: 5px;
-    height: 100;
-    cursor: ew-resize;
+    margin: 5px;
+    overflow-x: auto;
+    overflow-y: auto;
 }
 
 .title {
@@ -233,4 +227,40 @@ button:hover {
     font-weight: bolder;
     padding: 1rem;
     background-color: red;
+}
+
+/* ========== Responsive Pages ========== */
+
+/* Styles for desktop devices */
+@media (min-width: 800px) {
+    .section {
+        display: flex;
+        flex-direction: row;
+    }
+
+    .topic {
+        width: 50%;
+    }
+}
+
+/* Styles for tablets */
+@media (max-width: 799px) {
+    .section {
+        flex-direction: column;
+    }
+
+    .topic {
+        width: 100%;
+    }
+}
+
+/* Styles for phones */
+@media (max-width: 479px) {
+    .section {
+        flex-direction: column;
+    }
+
+    .topic {
+        width: 100%;
+    }
 }
