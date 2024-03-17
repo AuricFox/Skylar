@@ -41,7 +41,6 @@ body {
 /* ========== Nav Bar ========== */
 
 #nav-bar {
-    padding: 10px 0px 10px 5px;
     margin-bottom: 1rem;
     background-color: #021027;
     display: flex;
@@ -155,7 +154,7 @@ textarea {
     background-color: #000000;
     border-radius: 4px;
     height: 90%;
-    min-height: 10%;
+    min-height: 100px;
     min-width: 100%;
     max-width: 100%;
     color:#FFFFFF;
@@ -232,7 +231,7 @@ button:hover {
 /* ========== Responsive Pages ========== */
 
 /* Styles for desktop devices */
-@media (min-width: 800px) {
+@media (min-width: 850px) {
     .section {
         display: flex;
         flex-direction: row;
@@ -244,7 +243,7 @@ button:hover {
 }
 
 /* Styles for tablets */
-@media (max-width: 799px) {
+@media (max-width: 849px) {
     .section {
         flex-direction: column;
     }
