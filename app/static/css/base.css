@@ -25,6 +25,9 @@
 /* ========== Body ========== */
 
 body {
+    background-image: url(../images/future.jpg);
+    background-size: cover;
+    background-position: center;
     background-color: #082048;
     font-family: 'Times New Roman', Times, serif;
     width: 100%;
@@ -151,7 +154,7 @@ form {
 
 textarea {
     padding: 10px;
-    background-color: #000000;
+    background-color: #000;
     border-radius: 4px;
     height: 90%;
     min-height: 100px;
