@@ -2,8 +2,8 @@
 Serves as the entry point for the web server
 '''
 
-from app import create_app
-app = create_app()
+from app import init_app
+app = init_app()
 
 if __name__ == "__main__":
     '''

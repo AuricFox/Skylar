@@ -1,18 +1,14 @@
-from flask import request, render_template
-from . import utils
-from . import database
-from flask import current_app as app
-
-
-LOGGER = utils.LOGGER
+from flask import render_template, request
+from app.main import bp
+from app import database
 
 # ====================================================================
 # Main Pages
 # ====================================================================
-@app.route("/")
-@app.route("/index")
-@app.route("/home", methods=["POST", "GET"])
-def home():
+@bp.route("/")
+@bp.route("/index")
+@bp.route("/home", methods=["POST", "GET"])
+def index():
     '''
     Processes home page
 
@@ -34,13 +30,7 @@ def home():
     return render_template('home.html', data=data)
 
 # ====================================================================
-# Custom page not found
-@app.errorhandler(404)
-def page_not_found(error):
-    return render_template('404.html'), 404
-
-# ====================================================================
 # Custom favicon
-@app.route('/favicon.ico')
+@bp.route('/favicon.ico')
 def favicon():
-    return app.send_static_file('images/favicon.ico')
+    return bp.send_static_file('images/favicon.ico')
