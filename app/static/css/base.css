@@ -25,10 +25,8 @@
 /* ========== Body ========== */
 
 body {
-    background-image: url(../images/future.jpg);
-    background-size: cover;
-    background-position: center;
-    background-color: #082048;
+    background-color: #9fb6ff;
+    background: linear-gradient(to right, #e2e2e2, #9fb6ff);
     font-family: 'Times New Roman', Times, serif;
     width: 100%;
     position: relative;
@@ -45,21 +43,15 @@ body {
 
 #nav-bar {
     margin-bottom: 1rem;
-    background-color: #021027;
+    background: linear-gradient(to right, #e2e2e2, #9fb6ff);
     display: flex;
     flex-direction: row;
 }
 
 .nav {
-    list-style-type: none;
-    margin: 0;
-    padding: 0;
+    display: flex;
+    flex-direction: row;
     overflow: hidden;
-}
-
-.nav li {
-    display: inline;
-    float: left;
 }
 
 .nav-tile {
@@ -68,18 +60,23 @@ body {
     font-weight: bold;
     font-style: italic;
     display: block;
-    color: #FFFFFF;
+    color: #000;
     text-align: center;
-    padding: 14px;
+    padding: 10px 14px;
+    margin: 5px;
+    border-radius: 15px;
     text-decoration: none;
 }
 
 .active {
-    background: #0d4600;
+    background: #3d61d9;
+    color: #FFFFFF;
 }
 
 .nav-tile:hover {
-    background: #267315;
+    transition: 0.5s;
+    background: #3d61d9;
+    color:#FFFFFF;
     cursor: pointer;
 }
 
@@ -98,15 +95,16 @@ body {
 }
 
 .topic {
-    background-color: #021027;
+    background-color: rgba(255,255,255,0.2);
     padding: 1rem;
     margin: 5px;
+    border-radius: 15px;
     overflow-x: auto;
     overflow-y: auto;
 }
 
 .title {
-    color: #FFFFFF;
+    color: #000;
     font-size: 20px;
     font-weight: bold;
     text-align: center;
@@ -115,20 +113,22 @@ body {
 
 #schema .title {
     margin-bottom: 1rem;
-    border-bottom: 1px solid #FFFFFF;
+    border-bottom: 1px solid #000;
 }
 
 /* ========== Schema Table ========== */
 
 .table-name {
     font-size: 15px;
-    color: #FFFFFF;
+    color: #000;
     font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
     margin-bottom: 5px;
 }
 
 .schema-table {
     border-collapse: collapse;
+    border-radius: 10px;
+    overflow: hidden;
 }
 
 .schema-table:not(:last-child) {
@@ -140,7 +140,7 @@ body {
     text-align: left;
     border: 1px solid #FFFFFF;
     padding: 8px;
-    background-color: #292929;
+    background-color: rgba(0,0,234,0.3);
 }
 
 /* ========== Terminal ========== */
@@ -154,22 +154,25 @@ form {
 
 textarea {
     padding: 10px;
-    background-color: #000;
-    border-radius: 4px;
+    background-color: rgba(0,0,0,0.1);
+    border: 1px solid #FFFFFF;
+    border-radius: 15px;
     height: 90%;
     min-height: 100px;
     min-width: 100%;
     max-width: 100%;
     color:#FFFFFF;
+    outline: none;
 }
 
 button {
-    box-shadow: 2px 5px 8px #000;
+    transition: 0.5s;
+    box-shadow: 2px 5px 8px rgba(0,0,0,0.5);
     margin-top: 1rem;
-    padding: 5px 10px;
+    padding: 10px 15px;
     width: fit-content;
-    background-color: #292929;
-    border-radius: 8px;
+    background-color: #3d61d9;
+    border-radius: 15px;
     border: none;
     color: #FFFFFF;
     font-size: large;
@@ -177,10 +180,9 @@ button {
 }
 
 button:hover {
-    transition: background-color 0.3s ease-in-out;
+    transition: 0.5s;
     cursor: pointer;
-    background-color: #FFFFFF;
-    color: #000;
+    background-color: rgba(234, 0, 0, 0.7);
 }
 
 /* ========== Response Section ========== */
@@ -189,7 +191,8 @@ button:hover {
     display: flex;
     flex-direction: column;
     margin: 0 2rem 2rem 2rem;
-    background-color: #021027;
+    background-color: rgba(255, 255, 255, 0.2);
+    border-radius: 15px;
     color: #FFFFFF;
     max-height: 20rem;
 }
@@ -213,7 +216,7 @@ button:hover {
     text-align: left;
     border: 1px solid #FFFFFF;
     padding: 8px;
-    background-color: #292929;
+    background-color: rgb(78, 78, 209);
 }
 
 .data-table td {
@@ -221,7 +224,7 @@ button:hover {
     text-align: left;
     border: 1px solid #FFFFFF;
     padding: 8px;
-    background-color: #555;
+    background-color: rgba(0, 0, 0, 0.2);
 }
 
 .error {
