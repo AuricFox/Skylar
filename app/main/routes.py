@@ -27,7 +27,7 @@ def index():
 
     data['tables'] = database.get_tables()
 
-    return render_template('home.html', data=data)
+    return render_template('home.html', nav_id='home-page', data=data)
 
 # ====================================================================
 # Custom favicon

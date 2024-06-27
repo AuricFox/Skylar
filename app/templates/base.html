@@ -15,11 +15,9 @@
 
 <body>
     <div id="nav-bar">
-        <ul class="nav">
-            <li>
-                <a href="{{  url_for('main.index')  }}" class="nav-tile">Home</a>
-            </li>
-        </ul>
+        <nav class="nav">
+            <a href="{{  url_for('main.index')  }}" class="nav-tile {% if nav_id == 'home-page' %}active{% endif %}">Home</a>
+        </nav>
     </div>
 
     <!--Contains All Content Tiles-->
