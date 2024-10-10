@@ -14,18 +14,8 @@
 </head>
 
 <body>
-    <div id="nav-bar">
-        <nav class="nav">
-            <a href="{{  url_for('main.index')  }}" class="nav-tile {% if nav_id == 'home-page' %}active{% endif %}">Home</a>
-        </nav>
-    </div>
-
-    <!--Contains All Content Tiles-->
-    <div class="content">
-        {% block content %}{% endblock %}
-    </div>
-
-    <footer></footer>
+    <!--Contains table info and code terminal-->
+    <div class="content">{% block content %}{% endblock %}</div>
 
     <script src="{{ url_for('static', filename='js/base.js') }}"></script>
 </body>

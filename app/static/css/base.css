@@ -35,57 +35,14 @@ body {
     min-height: 100vh;
 }
 
-.content {
-    flex: 1;
-}
-
-/* ========== Nav Bar ========== */
-
-#nav-bar {
-    margin-bottom: 1rem;
-    background: linear-gradient(to right, #e2e2e2, #9fb6ff);
-    display: flex;
-    flex-direction: row;
-}
-
-.nav {
-    display: flex;
-    flex-direction: row;
-    overflow: hidden;
-}
-
-.nav-tile {
-    font-size: 15px;
-    font-family: Arial, sans-serif;
-    font-weight: bold;
-    font-style: italic;
-    display: block;
-    color: #000;
-    text-align: center;
-    padding: 10px 14px;
-    margin: 5px;
-    border-radius: 15px;
-    text-decoration: none;
-}
-
-.active {
-    background: #3d61d9;
-    color: #FFFFFF;
-}
-
-.nav-tile:hover {
-    transition: 0.5s;
-    background: #3d61d9;
-    color:#FFFFFF;
-    cursor: pointer;
-}
-
 /* ========== Content ========== */
 
 .content {
+    flex: 1;
     width: 100%;
     display: flex;
     flex-direction: column;
+    margin-top: 1rem;
 }
 
 /* ========== Section ========== */
