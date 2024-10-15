@@ -25,9 +25,7 @@
 
     <div class="topic" id="terminal">
         <form action="{{ url_for('main.index') }}" method="post">
-            <textarea name="code" id="code" placeholder="{{ 'Enter SQL query here...' if not data.get('query') }}">
-                {{ data['query'] if data.get('query') }}
-            </textarea>
+            <textarea name="code" id="code" placeholder="{{ 'Enter SQL query here...' if not data.get('query') }}">{{ data['query'] if data.get('query') }}</textarea>
             <button type="submit">Run Code</button>
         </form>
     </div>
