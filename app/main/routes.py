@@ -23,7 +23,7 @@ def index():
         
         query = request.form.get('code', type=str)
         data = database.db_query(query=query)
-        data['query'] = query
+        data['query'] = query.strip()
 
     data['tables'] = database.get_tables()
 
