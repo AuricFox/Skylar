@@ -4,6 +4,27 @@
     box-sizing: border-box;
 }
 
+:root {
+    --main-color: #1a1a1a;
+    --main-color-grad: linear-gradient(to right, #ffabab, #9fb6ff);
+    --topic-color: #3a3a3a;
+    
+    --title-text: #FFFFFF;
+    --table-text: #FFFFFF;
+    --form-text: #FFFFFF;
+    --button-text: #FFFFFF;
+    --hover-text: #FFFFFF;
+
+    --schema-color: #754501;
+    --form-color: rgb(227, 227, 227);
+    --button-color: #754501;
+    --hover-color: rgba(234, 0, 0, 0.7);
+    --response-color: rgba(255, 255, 255);
+    --data-header-color: #754501;
+    --data-color: rgba(0, 0, 0, 0.2);
+    --error-color: #F00;
+}
+
 ::-webkit-scrollbar {
     width: 5px;
 }
@@ -25,8 +46,7 @@
 /* ========== Body ========== */
 
 body {
-    background-color: #9fb6ff;
-    background: linear-gradient(to right, #e2e2e2, #9fb6ff);
+    background-color: var(--main-color);
     font-family: 'Times New Roman', Times, serif;
     width: 100%;
     position: relative;
@@ -52,7 +72,7 @@ body {
 }
 
 .topic {
-    background-color: rgba(255,255,255,0.2);
+    background-color: var(--topic-color);
     padding: 1rem;
     margin: 5px;
     border-radius: 15px;
@@ -61,7 +81,7 @@ body {
 }
 
 .title {
-    color: #000;
+    color: var(--title-text);
     font-size: 20px;
     font-weight: bold;
     text-align: center;
@@ -70,14 +90,14 @@ body {
 
 #schema .title {
     margin-bottom: 1rem;
-    border-bottom: 1px solid #000;
+    border-bottom: 1px solid var(--title-text);
 }
 
 /* ========== Schema Table ========== */
 
 .table-name {
     font-size: 15px;
-    color: #000;
+    color: var(--title-text);
     font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
     margin-bottom: 5px;
 }
@@ -93,11 +113,14 @@ body {
 }
 
 .schema-table th {
-    color:#FFFFFF;
+    color: var(--table-text);
     text-align: left;
-    border: 1px solid #FFFFFF;
     padding: 8px;
-    background-color: rgba(0,0,234,0.3);
+    background-color: var(--schema-color);
+}
+
+.schema-table th:not(:last-child) {
+    border-right: 2px solid var(--topic-color);
 }
 
 /* ========== Terminal ========== */
@@ -111,14 +134,14 @@ form {
 
 textarea {
     padding: 10px;
-    background-color: rgba(0,0,0,0.1);
-    border: 1px solid #FFFFFF;
+    background-color: var(--topic-color);
+    border: 1px solid #ffffff63;
     border-radius: 15px;
     height: 90%;
     min-height: 100px;
     min-width: 100%;
     max-width: 100%;
-    color:#FFFFFF;
+    color: var(--form-text);
     outline: none;
 }
 
@@ -128,10 +151,10 @@ button {
     margin-top: 1rem;
     padding: 10px 15px;
     width: fit-content;
-    background-color: #3d61d9;
+    background-color: var(--button-color);
     border-radius: 15px;
     border: none;
-    color: #FFFFFF;
+    color: var(--button-text);
     font-size: large;
     font-weight: bold;
 }
@@ -139,7 +162,8 @@ button {
 button:hover {
     transition: 0.5s;
     cursor: pointer;
-    background-color: rgba(234, 0, 0, 0.7);
+    background-color: var(--hover-color);
+    color: var(--hover-text);
 }
 
 /* ========== Response Section ========== */
@@ -148,9 +172,9 @@ button:hover {
     display: flex;
     flex-direction: column;
     margin: 0 2rem 2rem 2rem;
-    background-color: rgba(255, 255, 255, 0.2);
+    background-color: var(--topic-color);
     border-radius: 15px;
-    color: #FFFFFF;
+    color: var(--table-text);
     max-height: 20rem;
 }
 
@@ -169,26 +193,26 @@ button:hover {
     position: sticky;
     top: 0;
     z-index: 1;
-    color: #FFFFFF;
+    color: var(--table-text);
     text-align: left;
     border: 1px solid #FFFFFF;
     padding: 8px;
-    background-color: rgb(78, 78, 209);
+    background-color: var(--data-header-color);
 }
 
 .data-table td {
-    color: #FFFFFF;
+    color: var(--table-text);
     text-align: left;
     border: 1px solid #FFFFFF;
     padding: 8px;
-    background-color: rgba(0, 0, 0, 0.2);
+    background-color: var(--data-color);
 }
 
 .error {
     text-align: center;
     font-weight: bolder;
     padding: 1rem;
-    background-color: red;
+    background-color: var(--error-color);
 }
 
 /* ========== Responsive Pages ========== */
@@ -200,29 +224,17 @@ button:hover {
         flex-direction: row;
     }
 
-    .topic {
-        width: 50%;
-    }
+    .topic {width: 50%;}
 }
 
 /* Styles for tablets */
 @media (max-width: 849px) {
-    .section {
-        flex-direction: column;
-    }
-
-    .topic {
-        width: 100%;
-    }
+    .section {flex-direction: column;}
+    .topic {width: 100%;}
 }
 
 /* Styles for phones */
 @media (max-width: 479px) {
-    .section {
-        flex-direction: column;
-    }
-
-    .topic {
-        width: 100%;
-    }
+    .section {flex-direction: column;}
+    .topic {width: 100%;}
 }
