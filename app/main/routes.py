@@ -1,9 +1,9 @@
-from flask import render_template, request
+from flask import render_template, request, redirect, url_for
 from app.main import bp
 from app import database
 
 # ====================================================================
-# Main Pages
+# Main Routes
 # ====================================================================
 @bp.route("/")
 @bp.route("/index")
@@ -28,6 +28,20 @@ def index():
     data['tables'] = database.get_tables()
 
     return render_template('home.html', nav_id='home-page', data=data)
+
+# --------------------------------------------------------------------
+@bp.route('/reset_database')
+def reset_database():
+    '''
+    Resets database to default data
+
+    Parameter(s): None
+
+    Output(s):
+        None, redirects to the home page
+    '''
+    database.init_database()
+    return redirect(url_for('main.index'))
 
 # ====================================================================
 # Custom favicon
