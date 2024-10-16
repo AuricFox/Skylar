@@ -25,23 +25,12 @@
     --error-color: #F00;
 }
 
-::-webkit-scrollbar {
-    width: 5px;
-}
+/* ========== Scroll Bar ========== */
 
-::-webkit-scrollbar-track {
-    background: #f1f1f1;
-}
-
-/* Handle */
-::-webkit-scrollbar-thumb {
-    background: #888;
-}
-
-/* Handle on hover */
-::-webkit-scrollbar-thumb:hover {
-    background: #555;
-}
+::-webkit-scrollbar {width: 5px;}
+::-webkit-scrollbar-track {background: #f1f1f1;}
+::-webkit-scrollbar-thumb {background: #888;}
+::-webkit-scrollbar-thumb:hover {background: #555;}
 
 /* ========== Body ========== */
 
@@ -104,7 +93,7 @@ body {
 
 .schema-table {
     border-collapse: collapse;
-    border-radius: 10px;
+    border-radius: 4px;
     overflow: hidden;
 }
 
@@ -115,7 +104,7 @@ body {
 .schema-table th {
     color: var(--table-text);
     text-align: left;
-    padding: 8px;
+    padding: 5px 8px;
     background-color: var(--schema-color);
 }
 
@@ -152,7 +141,7 @@ button {
     padding: 10px 15px;
     width: fit-content;
     background-color: var(--button-color);
-    border-radius: 15px;
+    border-radius: 4px;
     border: none;
     color: var(--button-text);
     font-size: large;
